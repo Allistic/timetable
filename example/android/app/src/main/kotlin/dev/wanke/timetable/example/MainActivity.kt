@@ -1,4 +1,4 @@
-package dev.wanke.timetable.example
+package dev.wanke.remind_timetable.example
 
 import io.flutter.embedding.android.FlutterActivity
 

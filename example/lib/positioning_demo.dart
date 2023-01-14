@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:black_hole_flutter/black_hole_flutter.dart';
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
-import 'package:timetable/src/utils.dart';
-import 'package:timetable/timetable.dart';
+import 'package:remind_timetable/src/utils.dart';
+import 'package:remind_timetable/timetable.dart';
 
 // A basic EventProvider containing a single event:
 // eventProvider: EventProvider.list([

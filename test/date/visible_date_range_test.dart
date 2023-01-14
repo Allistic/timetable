@@ -1,6 +1,6 @@
 import 'package:glados/glados.dart';
-import 'package:timetable/src/utils.dart';
-import 'package:timetable/timetable.dart';
+import 'package:remind_timetable/src/utils.dart';
+import 'package:remind_timetable/timetable.dart';
 import 'package:tuple_glados/tuple_glados.dart';
 
 void main() {

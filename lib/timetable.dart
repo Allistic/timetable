@@ -1,4 +1,4 @@
-library timetable;
+library remind_timetable;
 
 export 'src/callbacks.dart';
 export 'src/components/date_content.dart';

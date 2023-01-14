@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import 'package:timetable/src/event/event.dart';
-import 'package:timetable/src/utils.dart';
+import 'package:remind_timetable/src/event/event.dart';
+import 'package:remind_timetable/src/utils.dart';
 
 void main() {
   group('TimetableEvent', () {

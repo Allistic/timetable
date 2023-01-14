@@ -1,4 +1,4 @@
-name: timetable_example
+name: remind_timetable_example
 description: A simple example app for the timetable package
 publish_to: none
 
@@ -12,7 +12,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  timetable:
+  remind_timetable:
     path: ../
 
 dev_dependencies:

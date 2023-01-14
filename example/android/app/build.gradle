@@ -42,7 +42,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "dev.wanke.timetable.example"
+        applicationId "dev.wanke.remind_timetable.example"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
