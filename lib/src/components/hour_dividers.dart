@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../config.dart';
 import '../theme.dart';
 import '../utils.dart';
+import 'dividers.dart';
 
 /// A widget that displays horizontal dividers between hours of a day.
 ///
@@ -23,10 +24,8 @@ class HourDividers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _HourDividersPainter(
-        style: style ?? TimetableTheme.orDefaultOf(context).hourDividersStyle,
-      ),
+    return Dividers(
+      style: DividersStyle(context, color: style?.color, width: style?.width, interval: 1.hours),
       child: child,
     );
   }
@@ -74,28 +73,4 @@ class HourDividersStyle {
         color == other.color &&
         width == other.width;
   }
-}
-
-class _HourDividersPainter extends CustomPainter {
-  _HourDividersPainter({
-    required this.style,
-  }) : _paint = Paint()
-          ..color = style.color
-          ..strokeWidth = style.width;
-
-  final HourDividersStyle style;
-  final Paint _paint;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final heightPerHour = size.height / Duration.hoursPerDay;
-    for (final h in InternalDateTimeTimetable.innerDateHours) {
-      final y = h * heightPerHour;
-      canvas.drawLine(Offset(-8, y), Offset(size.width, y), _paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_HourDividersPainter oldDelegate) =>
-      style != oldDelegate.style;
 }

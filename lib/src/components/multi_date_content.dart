@@ -37,10 +37,10 @@ class MultiDateContent<E extends Event> extends StatefulWidget {
   final GlobalKey<MultiDateContentGeometry>? geometryKey;
 
   @override
-  State<MultiDateContent<E>> createState() => _MultiDateContentState<E>();
+  State<MultiDateContent<E>> createState() => MultiDateContentState<E>();
 }
 
-class _MultiDateContentState<E extends Event>
+class MultiDateContentState<E extends Event>
     extends State<MultiDateContent<E>> {
   late GlobalKey<MultiDateContentGeometry> geometryKey;
   late bool wasGeometryKeyFromWidget;
@@ -83,7 +83,7 @@ class _MultiDateContentState<E extends Event>
       child: TimeZoom(
         child: HourDividers(
           child: NowIndicator(
-            child: _MultiDateContentGeometryWidget(
+            child: MultiDateContentGeometryWidget(
               key: geometryKey,
               child: datePages,
             ),
@@ -94,8 +94,8 @@ class _MultiDateContentState<E extends Event>
   }
 }
 
-class _MultiDateContentGeometryWidget extends StatefulWidget {
-  const _MultiDateContentGeometryWidget({
+class MultiDateContentGeometryWidget extends StatefulWidget {
+  const MultiDateContentGeometryWidget({
     required GlobalKey<MultiDateContentGeometry> key,
     required this.child,
   }) : super(key: key);
@@ -106,7 +106,7 @@ class _MultiDateContentGeometryWidget extends StatefulWidget {
   MultiDateContentGeometry createState() => MultiDateContentGeometry._();
 }
 
-class MultiDateContentGeometry extends State<_MultiDateContentGeometryWidget> {
+class MultiDateContentGeometry extends State<MultiDateContentGeometryWidget> {
   MultiDateContentGeometry._();
 
   @override
