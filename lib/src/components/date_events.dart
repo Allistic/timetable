@@ -4,7 +4,10 @@ import '../config.dart';
 import '../event/builder.dart';
 import '../event/event.dart';
 import '../theme.dart';
+import '../time/controller.dart';
 import '../utils.dart';
+
+// This manages how [Event]s get layed out
 
 /// A widget that displays the given [Event]s.
 ///
@@ -37,14 +40,12 @@ class DateEvents<E extends Event> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eventBuilder =
-        this.eventBuilder ?? DefaultEventBuilder.of<E>(context)!;
-    final style = this.style ??
-        TimetableTheme.orDefaultOf(context).dateEventsStyleProvider(date);
+    final eventBuilder = this.eventBuilder ?? DefaultEventBuilder.of<E>(context)!;
+    final style = this.style ?? TimetableTheme.orDefaultOf(context).dateEventsStyleProvider(date);
     return Padding(
       padding: style.padding,
       child: CustomMultiChildLayout(
-        delegate: _DayEventsLayoutDelegate(date, events, style),
+        delegate: _DayEventsLayoutDelegate(date, events, style, DefaultTimeController.of(context)!),
         children: [
           for (final event in events)
             LayoutId(
@@ -83,8 +84,7 @@ class DateEventsStyle {
       minEventHeight: minEventHeight ?? 16,
       padding: padding ?? const EdgeInsets.only(right: 1),
       enableStacking: enableStacking ?? true,
-      minEventDeltaForStacking:
-          minEventDeltaForStacking ?? const Duration(minutes: 15),
+      minEventDeltaForStacking: minEventDeltaForStacking ?? const Duration(minutes: 15),
       stackedEventSpacing: stackedEventSpacing ?? 4,
     );
   }
@@ -144,8 +144,7 @@ class DateEventsStyle {
       minEventHeight: minEventHeight ?? this.minEventHeight,
       padding: padding ?? this.padding,
       enableStacking: enableStacking ?? this.enableStacking,
-      minEventDeltaForStacking:
-          minEventDeltaForStacking ?? this.minEventDeltaForStacking,
+      minEventDeltaForStacking: minEventDeltaForStacking ?? this.minEventDeltaForStacking,
       stackedEventSpacing: stackedEventSpacing ?? this.stackedEventSpacing,
     );
   }
@@ -174,9 +173,8 @@ class DateEventsStyle {
   }
 }
 
-class _DayEventsLayoutDelegate<E extends Event>
-    extends MultiChildLayoutDelegate {
-  _DayEventsLayoutDelegate(this.date, this.events, this.style)
+class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate {
+  _DayEventsLayoutDelegate(this.date, this.events, this.style, this.controller)
       : assert(date.debugCheckIsValidTimetableDate());
 
   static const minWidth = 4.0;
@@ -184,7 +182,11 @@ class _DayEventsLayoutDelegate<E extends Event>
   final DateTime date;
   final List<E> events;
 
+  final TimeController controller;
+
   final DateEventsStyle style;
+
+  Duration get maxViewDuration => 1.days; //controller.maxRange.duration;
 
   @override
   void performLayout(Size size) {
@@ -209,17 +211,13 @@ class _DayEventsLayoutDelegate<E extends Event>
       final top = timeToY(event.start)
           .coerceAtMost(size.height - durationToY(style.minEventDuration))
           .coerceAtMost(size.height - style.minEventHeight);
-      final height = durationToY(_durationOn(event, size.height))
-          .clamp(0, size.height - top)
-          .toDouble();
+      final height = durationToY(_durationOn(event, size.height)).clamp(0, size.height - top).toDouble();
 
       final position = positions.eventPositions[event]!;
-      final columnWidth =
-          size.width / positions.groupColumnCounts[position.group];
+      final columnWidth = size.width / positions.groupColumnCounts[position.group];
       final columnLeft = columnWidth * position.column;
       final left = columnLeft + position.index * style.stackedEventSpacing;
-      final width = columnWidth * position.columnSpan -
-          position.index * style.stackedEventSpacing;
+      final width = columnWidth * position.columnSpan - position.index * style.stackedEventSpacing;
 
       final childSize = Size(width.coerceAtLeast(minWidth), height);
       layoutChild(event, BoxConstraints.tight(childSize));
@@ -246,9 +244,7 @@ class _DayEventsLayoutDelegate<E extends Event>
 
       currentGroup.add(event);
       final actualEnd = _actualEnd(event, height);
-      currentEnd = currentEnd == null
-          ? actualEnd
-          : currentEnd.coerceAtLeast(_actualEnd(event, height));
+      currentEnd = currentEnd == null ? actualEnd : currentEnd.coerceAtLeast(_actualEnd(event, height));
     }
     _endGroup(positions, currentGroup, height);
 
@@ -262,8 +258,7 @@ class _DayEventsLayoutDelegate<E extends Event>
   ) {
     if (currentGroup.isEmpty) return;
     if (currentGroup.length == 1) {
-      positions.eventPositions[currentGroup.first] =
-          _SingleEventPosition(positions.groupColumnCounts.length, 0, 0);
+      positions.eventPositions[currentGroup.first] = _SingleEventPosition(positions.groupColumnCounts.length, 0, 0);
       positions.groupColumnCounts.add(1);
       return;
     }
@@ -280,8 +275,7 @@ class _DayEventsLayoutDelegate<E extends Event>
 
         // No space in current column
         if (!style.enableStacking && event.start < _actualEnd(other, height) ||
-            style.enableStacking &&
-                event.start < other.start + style.minEventDeltaForStacking) {
+            style.enableStacking && event.start < other.start + style.minEventDeltaForStacking) {
           continue;
         }
 
@@ -291,13 +285,10 @@ class _DayEventsLayoutDelegate<E extends Event>
                 .maxOrNull ??
             -1;
 
-        final previousEnd = column
-            .map((it) => it.end)
-            .reduce((value, element) => value.coerceAtLeast(element));
+        final previousEnd = column.map((it) => it.end).reduce((value, element) => value.coerceAtLeast(element));
 
         // Further at the top and hence wider
-        if (index < minIndex ||
-            (index == minIndex && (minEnd != null && previousEnd < minEnd))) {
+        if (index < minIndex || (index == minIndex && (minEnd != null && previousEnd < minEnd))) {
           minColumn = columnIndex;
           minIndex = index;
           minEnd = previousEnd;
@@ -333,16 +324,13 @@ class _DayEventsLayoutDelegate<E extends Event>
       for (var i = position.column + 1; i < columns.length; i++) {
         final hasOverlapInColumn = currentGroup
             .where((e) => positions.eventPositions[e]!.column == i)
-            .where((e) =>
-                event.start < _actualEnd(e, height) &&
-                e.start < _actualEnd(event, height))
+            .where((e) => event.start < _actualEnd(e, height) && e.start < _actualEnd(event, height))
             .isNotEmpty;
         if (hasOverlapInColumn) break;
 
         columnSpan++;
       }
-      positions.eventPositions[event] =
-          position.copyWith(columnSpan: columnSpan);
+      positions.eventPositions[event] = position.copyWith(columnSpan: columnSpan);
     }
 
     positions.groupColumnCounts.add(columns.length);
@@ -357,7 +345,7 @@ class _DayEventsLayoutDelegate<E extends Event>
 
   Duration _durationOn(E event, double height) {
     final start = event.start.coerceAtLeast(date);
-    final end = _actualEnd(event, height).coerceAtMost(date + 1.days);
+    final end = _actualEnd(event, height).coerceAtMost(date + maxViewDuration);
     return end.difference(start);
   }
 

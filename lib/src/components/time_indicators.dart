@@ -4,9 +4,8 @@ import 'package:black_hole_flutter/black_hole_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-import '../theme.dart';
+import '../../timetable.dart';
 import '../utils.dart';
-import 'time_indicator.dart';
 
 /// A widget that positions [TimeIndicator] widgets.
 ///
@@ -79,17 +78,24 @@ class TimeIndicators extends StatelessWidget {
       return alignment;
     }
 
+    final children = <TimeIndicatorsChild>[];
+    print("firstIndex: $firstIndex - $lastIndex");
+    for (final i in firstIndex.rangeTo(lastIndex)) {
+      // print(i);
+
+      children.add(
+        _buildChild(
+          indexToTime(i),
+          getAlignmentFor(i),
+          styleProvider,
+          formatter,
+        ),
+      );
+    }
+
     return TimeIndicators(
       key: key,
-      children: [
-        for (final i in firstIndex.rangeTo(lastIndex))
-          _buildChild(
-            indexToTime(i),
-            getAlignmentFor(i),
-            styleProvider,
-            formatter,
-          ),
-      ],
+      children: [...children],
     );
   }
 
@@ -133,13 +139,14 @@ class _TimeIndicators extends MultiChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) =>
-      _TimeIndicatorsLayout(textDirection: context.directionality);
+      _TimeIndicatorsLayout(textDirection: context.directionality, controller: DefaultTimeController.of(context)!);
   @override
   void updateRenderObject(
     BuildContext context,
     _TimeIndicatorsLayout renderObject,
   ) {
     renderObject.textDirection = context.directionality;
+    renderObject.controller = DefaultTimeController.of(context) ?? renderObject.controller;
   }
 }
 
@@ -187,8 +194,11 @@ class _TimeIndicatorsLayout extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, _TimeIndicatorParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, _TimeIndicatorParentData> {
-  _TimeIndicatorsLayout({required TextDirection textDirection})
-      : _textDirection = textDirection;
+  _TimeIndicatorsLayout({
+    required this.controller,
+    required TextDirection textDirection,
+  }) : _textDirection = textDirection;
+  TimeController controller;
 
   TextDirection _textDirection;
   TextDirection get textDirection => _textDirection;
@@ -273,6 +283,5 @@ class _TimeIndicatorsLayout extends RenderBox
       defaultHitTestChildren(result, position: position);
 
   @override
-  void paint(PaintingContext context, Offset offset) =>
-      defaultPaint(context, offset);
+  void paint(PaintingContext context, Offset offset) => defaultPaint(context, offset);
 }

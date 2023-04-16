@@ -207,9 +207,7 @@ extension InternalDateTimeTimetable on DateTime {
   bool operator >(DateTime other) => isAfter(other);
   bool operator >=(DateTime other) => isAfter(other) || isAtSameMomentAs(other);
 
-  static final List<int> innerDateHours = List.generate(Duration.hoursPerDay - 1, (i) => i + 1);
 }
-
 extension NullableDateTimeTimetable on DateTime? {
   bool get isValidTimetableDateTime => this == null || this!.isUtc;
   bool debugCheckIsValidTimetableDateTime() {

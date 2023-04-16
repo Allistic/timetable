@@ -21,7 +21,7 @@ class TimetableExample extends StatefulWidget {
 
 class _TimetableExampleState extends State<TimetableExample>
     with TickerProviderStateMixin {
-  var _visibleDateRange = PredefinedVisibleDateRange.week;
+  var _visibleDateRange = PredefinedVisibleDateRange.threeDays;
   void _updateVisibleDateRange(PredefinedVisibleDateRange newValue) {
     setState(() {
       _visibleDateRange = newValue;
@@ -44,6 +44,7 @@ class _TimetableExampleState extends State<TimetableExample>
     // maxDuration: 10.hours,
     // initialRange: TimeRange(8.hours, 20.hours),
     maxRange: TimeRange(-5.hours, 30.hours),
+    // maxRange: TimeRange(6.hours, 18.hours),
   );
 
   final _draggedEvents = <BasicEvent>[];
@@ -64,7 +65,7 @@ class _TimetableExampleState extends State<TimetableExample>
       eventBuilder: (context, event) => _buildPartDayEvent(event),
       // ignore: sort_child_properties_last
       child: Column(children: [
-        _buildAppBar(),
+        // _buildAppBar(),
         Expanded(
           child: _isRecurringLayout
               ? RecurringMultiDateTimetable<BasicEvent>()

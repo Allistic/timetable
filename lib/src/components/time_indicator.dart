@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../config.dart';
-import '../localization.dart';
 import '../theme.dart';
 import '../utils.dart';
 import 'time_indicators.dart';
@@ -27,16 +26,12 @@ class TimeIndicator extends StatelessWidget {
   }) : assert(time.debugCheckIsValidTimetableTimeOfDay());
 
   static String formatHour(Duration time) => _format(DateFormat.j(), time);
-  static String formatHourMinute(Duration time) =>
-      _format(DateFormat.jm(), time);
-  static String formatHourMinuteSecond(Duration time) =>
-      _format(DateFormat.jms(), time);
+  static String formatHourMinute(Duration time) => _format(DateFormat.jm(), time);
+  static String formatHourMinuteSecond(Duration time) => _format(DateFormat.jms(), time);
 
   static String formatHour24(Duration time) => _format(DateFormat.H(), time);
-  static String formatHour24Minute(Duration time) =>
-      _format(DateFormat.Hm(), time);
-  static String formatHour24MinuteSecond(Duration time) =>
-      _format(DateFormat.Hms(), time);
+  static String formatHour24Minute(Duration time) => _format(DateFormat.Hm(), time);
+  static String formatHour24MinuteSecond(Duration time) => _format(DateFormat.Hms(), time);
 
   static String _format(DateFormat format, Duration time) {
     assert(time.debugCheckIsValidTimetableTimeOfDay());
@@ -48,10 +43,24 @@ class TimeIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = this.style ??
-        TimetableTheme.orDefaultOf(context).timeIndicatorStyleProvider(time);
+    final convertedTime = () {
+      if (time < 0.hours) {
+        return 1.days - time;
+      }
+      if (time > 24.hours) {
+        return time - 1.days;
+      }
+      return time;
+    }();
 
-    return Text(style.label, style: style.textStyle);
+    // print("time: $time - $convertedTime");
+    final style = this.style ?? TimetableTheme.orDefaultOf(context).timeIndicatorStyleProvider(time);
+
+    return Text(
+      style.label,
+      key: ValueKey(time),
+      style: style.textStyle,
+    );
   }
 }
 
@@ -73,24 +82,21 @@ class TimeIndicatorStyle {
 
     final theme = context.theme;
     final bodySmall = theme.textTheme.bodySmall!;
-    final proportionalFiguresFeature =
-        const FontFeature.proportionalFigures().value;
+    final proportionalFiguresFeature = const FontFeature.proportionalFigures().value;
     return TimeIndicatorStyle.raw(
       textStyle: textStyle ??
           bodySmall.copyWith(
             color: theme.colorScheme.background.disabledOnColor,
             fontFeatures: [
-              ...?bodySmall.fontFeatures
-                  ?.where((it) => it.value != proportionalFiguresFeature),
+              ...?bodySmall.fontFeatures?.where((it) => it.value != proportionalFiguresFeature),
               const FontFeature.tabularFigures(),
             ],
           ),
       label: label ??
           () {
-            context.dependOnTimetableLocalizations();
-            return alwaysUse24HourFormat
-                ? TimeIndicator.formatHour24(time)
-                : TimeIndicator.formatHour(time);
+            return time.toString();
+            // context.dependOnTimetableLocalizations();
+            // return alwaysUse24HourFormat ? TimeIndicator.formatHour24(time) : TimeIndicator.formatHour(time);
           }(),
     );
   }
@@ -114,8 +120,6 @@ class TimeIndicatorStyle {
   int get hashCode => Object.hash(textStyle, label);
   @override
   bool operator ==(Object other) {
-    return other is TimeIndicatorStyle &&
-        textStyle == other.textStyle &&
-        label == other.label;
+    return other is TimeIndicatorStyle && textStyle == other.textStyle && label == other.label;
   }
 }

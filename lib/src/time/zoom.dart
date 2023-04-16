@@ -43,8 +43,7 @@ class _TimeZoomState extends State<TimeZoom>
       _parentHeight *
       (_controller!.maxRange.duration / _controller!.value.duration);
   double get _outerOffset {
-    final timeRange = _controller!.value;
-    return (timeRange.startTime - _controller!.maxRange.startTime) /
+    return (_controller!.value.startTime - _controller!.maxRange.startTime) /
         _controller!.maxRange.duration *
         _outerChildHeight;
   }
