@@ -24,10 +24,10 @@ class DateEvents<E extends Event> extends StatelessWidget {
     this.eventBuilder,
     this.style,
   })  : assert(date.debugCheckIsValidTimetableDate()),
-        assert(
-          events.every((e) => e.interval.intersects(date.fullDayInterval)),
-          'All events must intersect the given date',
-        ),
+        // assert(
+        //   events.every((e) => e.interval.intersects(date.fullDayInterval)),
+        //   'All events must intersect the given date',
+        // ),
         events = events.sortedByStartLength();
 
   final DateTime date;

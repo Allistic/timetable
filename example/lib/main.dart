@@ -43,7 +43,7 @@ class _TimetableExampleState extends State<TimetableExample>
     // minDuration: 1.hours,
     // maxDuration: 10.hours,
     // initialRange: TimeRange(8.hours, 20.hours),
-    maxRange: TimeRange(0.hours, 24.hours),
+    maxRange: TimeRange(-5.hours, 30.hours),
   );
 
   final _draggedEvents = <BasicEvent>[];
@@ -79,7 +79,7 @@ class _TimetableExampleState extends State<TimetableExample>
         onTap: () => _showSnackBar('All-day event $event tapped'),
       ),
       timeOverlayProvider: mergeTimeOverlayProviders([
-        positioningDemoOverlayProvider,
+        // positioningDemoOverlayProvider,
         (context, date) => _draggedEvents
             .map(
               (it) =>

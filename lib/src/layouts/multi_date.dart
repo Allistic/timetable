@@ -289,6 +289,8 @@ class _DefaultContentLeading extends StatelessWidget {
               // `TimeIndicators.hours` overwrites the style provider's labels by
               // default, but here we want the user's style provider from the ambient
               // theme to take precedence.
+              firstHour: -1,
+              lastHour: 25,
               styleProvider:
                   TimetableTheme.of(context)?.timeIndicatorStyleProvider,
             ),
