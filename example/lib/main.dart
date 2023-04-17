@@ -69,7 +69,21 @@ class _TimetableExampleState extends State<TimetableExample>
         Expanded(
           child: _isRecurringLayout
               ? RecurringMultiDateTimetable<BasicEvent>()
-              : MultiDateTimetable<BasicEvent>(),
+              : MultiDateTimetable<BasicEvent>(
+                  headerBuilder: (context, leadingWidth) => ColoredBox(
+                    color: Colors.amber.shade800.withOpacity(0.7),
+                    child: MultiDateTimetableHeader<BasicEvent>(
+                      leading: SizedBox(
+                        width: leadingWidth,
+                        child: Align(
+                          heightFactor: 1,
+                          alignment: Alignment.center,
+                          child: WeekIndicator.forController(null),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
         ),
       ]),
       // Optional:

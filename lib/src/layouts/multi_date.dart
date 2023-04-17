@@ -59,8 +59,7 @@ class MultiDateTimetable<E extends Event> extends StatefulWidget {
     return MultiDateTimetable.raw(
       key: key,
       headerBuilder: headerBuilder ?? _defaultHeaderBuilder<E>(),
-      contentBuilder: contentBuilder ??
-          _defaultContentBuilder<E>(contentLeading, contentGeometryKey),
+      contentBuilder: contentBuilder ?? _defaultContentBuilder<E>(contentLeading, contentGeometryKey),
     );
   }
 
@@ -71,8 +70,7 @@ class MultiDateTimetable<E extends Event> extends StatefulWidget {
   });
 
   final MultiDateTimetableHeaderBuilder headerBuilder;
-  static MultiDateTimetableHeaderBuilder
-      _defaultHeaderBuilder<E extends Event>() {
+  static MultiDateTimetableHeaderBuilder _defaultHeaderBuilder<E extends Event>() {
     return (context, leadingWidth) => MultiDateTimetableHeader<E>(
           leading: SizedBox(
             width: leadingWidth,
@@ -86,8 +84,7 @@ class MultiDateTimetable<E extends Event> extends StatefulWidget {
   }
 
   final MultiDateTimetableContentBuilder contentBuilder;
-  static MultiDateTimetableContentBuilder
-      _defaultContentBuilder<E extends Event>(
+  static MultiDateTimetableContentBuilder _defaultContentBuilder<E extends Event>(
     Widget? contentLeading,
     GlobalKey<MultiDateContentGeometry>? contentGeometryKey,
   ) {
@@ -104,8 +101,7 @@ class MultiDateTimetable<E extends Event> extends StatefulWidget {
   State<MultiDateTimetable<E>> createState() => _MultiDateTimetableState();
 }
 
-class _MultiDateTimetableState<E extends Event>
-    extends State<MultiDateTimetable<E>> {
+class _MultiDateTimetableState<E extends Event> extends State<MultiDateTimetable<E>> {
   double? _leadingWidth;
 
   @override
@@ -114,16 +110,14 @@ class _MultiDateTimetableState<E extends Event>
     final eventProvider = DefaultEventProvider.of<E>(context) ?? (_) => [];
 
     final header = DefaultEventProvider<E>(
-      eventProvider: (visibleDates) =>
-          eventProvider(visibleDates).where((it) => it.isAllDay).toList(),
+      eventProvider: (visibleDates) => eventProvider(visibleDates).where((it) => it.isAllDay).toList(),
       child: Builder(
         builder: (context) => widget.headerBuilder(context, _leadingWidth),
       ),
     );
 
     final content = DefaultEventProvider<E>(
-      eventProvider: (visibleDates) =>
-          eventProvider(visibleDates).where((it) => it.isPartDay).toList(),
+      eventProvider: (visibleDates) => eventProvider(visibleDates).where((it) => it.isPartDay).toList(),
       child: Builder(
         builder: (context) => widget.contentBuilder(
           context,
@@ -134,12 +128,12 @@ class _MultiDateTimetableState<E extends Event>
 
     return LayoutBuilder(builder: (context, constraints) {
       final maxHeaderHeight = constraints.maxHeight * style.maxHeaderFraction;
-      return Column(children: [
+      return Stack(children: [
+        Positioned.fill(child: content),
         ConstrainedBox(
           constraints: BoxConstraints(maxHeight: maxHeaderHeight),
           child: header,
         ),
-        Expanded(child: content),
       ]);
     });
   }
@@ -154,8 +148,7 @@ class MultiDateTimetableHeader<E extends Event> extends StatelessWidget {
   }) : this.raw(
           key: key,
           leading: leading ?? WeekIndicator.forController(null),
-          dateHeaderBuilder:
-              dateHeaderBuilder ?? ((context, date) => DateHeader(date)),
+          dateHeaderBuilder: dateHeaderBuilder ?? ((context, date) => DateHeader(date)),
           bottom: bottom ?? MultiDateEventHeader<E>(),
         );
 
@@ -269,8 +262,7 @@ class MultiDateTimetableStyle {
   int get hashCode => maxHeaderFraction.hashCode;
   @override
   bool operator ==(Object other) {
-    return other is MultiDateTimetableStyle &&
-        maxHeaderFraction == other.maxHeaderFraction;
+    return other is MultiDateTimetableStyle && maxHeaderFraction == other.maxHeaderFraction;
   }
 }
 
@@ -293,8 +285,7 @@ class _DefaultContentLeading extends StatelessWidget {
               // `TimeIndicators.hours` overwrites the style provider's labels by
               // default, but here we want the user's style provider from the ambient
               // theme to take precedence.
-              styleProvider:
-                  TimetableTheme.of(context)?.timeIndicatorStyleProvider,
+              styleProvider: TimetableTheme.of(context)?.timeIndicatorStyleProvider,
             ),
           ),
         ),
