@@ -43,6 +43,8 @@ class TimeController extends ValueNotifier<TimeRange> {
     assert(initialRange == null || _isValidRange(initialRange));
   }
 
+  List<int> get innerDateHours => List.generate(maxRange.duration.inHours, (i) => i + maxRange.startTime.inHours);
+
   static TimeRange _getInitialRange(
     Duration? maxDuration,
     TimeRange? maxRange,

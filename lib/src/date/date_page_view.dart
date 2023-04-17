@@ -183,11 +183,11 @@ class MultiDateScrollController extends ScrollController {
       'MultiDateScrollControllers can only be used with '
       'MultiDateScrollPositions.',
     );
-    final linkedPosition = position as MultiDateScrollPosition;
-    assert(
-      linkedPosition.owner == this,
-      'MultiDateScrollPosition cannot change controllers once created.',
-    );
+    // final linkedPosition = position as MultiDateScrollPosition;
+    // assert(
+    //   linkedPosition.owner == this,
+    //   'MultiDateScrollPosition cannot change controllers once created.',
+    // );
     super.attach(position);
   }
 

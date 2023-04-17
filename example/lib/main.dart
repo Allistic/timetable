@@ -21,7 +21,7 @@ class TimetableExample extends StatefulWidget {
 
 class _TimetableExampleState extends State<TimetableExample>
     with TickerProviderStateMixin {
-  var _visibleDateRange = PredefinedVisibleDateRange.week;
+  var _visibleDateRange = PredefinedVisibleDateRange.threeDays;
   void _updateVisibleDateRange(PredefinedVisibleDateRange newValue) {
     setState(() {
       _visibleDateRange = newValue;
@@ -43,7 +43,8 @@ class _TimetableExampleState extends State<TimetableExample>
     // minDuration: 1.hours,
     // maxDuration: 10.hours,
     // initialRange: TimeRange(8.hours, 20.hours),
-    maxRange: TimeRange(0.hours, 24.hours),
+    maxRange: TimeRange(-3.hours, 26.hours),
+    // maxRange: TimeRange(6.hours, 18.hours),
   );
 
   final _draggedEvents = <BasicEvent>[];
@@ -64,7 +65,7 @@ class _TimetableExampleState extends State<TimetableExample>
       eventBuilder: (context, event) => _buildPartDayEvent(event),
       // ignore: sort_child_properties_last
       child: Column(children: [
-        _buildAppBar(),
+        // _buildAppBar(),
         Expanded(
           child: _isRecurringLayout
               ? RecurringMultiDateTimetable<BasicEvent>()
@@ -79,33 +80,35 @@ class _TimetableExampleState extends State<TimetableExample>
         onTap: () => _showSnackBar('All-day event $event tapped'),
       ),
       timeOverlayProvider: mergeTimeOverlayProviders([
-        positioningDemoOverlayProvider,
+        // positioningDemoOverlayProvider,
         (context, date) => _draggedEvents
-            .map((it) =>
-                it.toTimeOverlay(date: date, widget: BasicEventWidget(it)))
+            .map(
+              (it) =>
+                  it.toTimeOverlay(date: date, widget: BasicEventWidget(it)),
+            )
             .whereNotNull()
             .toList(),
       ]),
-      callbacks: TimetableCallbacks(
-        onWeekTap: (week) {
-          _showSnackBar('Tapped on week $week.');
-          _updateVisibleDateRange(PredefinedVisibleDateRange.week);
-          _dateController.animateTo(
-            week.getDayOfWeek(DateTime.monday),
-            vsync: this,
-          );
-        },
-        onDateTap: (date) {
-          _showSnackBar('Tapped on date $date.');
-          _dateController.animateTo(date, vsync: this);
-        },
-        onDateBackgroundTap: (date) =>
-            _showSnackBar('Tapped on date background at $date.'),
-        onDateTimeBackgroundTap: (dateTime) =>
-            _showSnackBar('Tapped on date-time background at $dateTime.'),
-        onMultiDateHeaderOverflowTap: (date) =>
-            _showSnackBar('Tapped on the overflow of $date.'),
-      ),
+      // callbacks: TimetableCallbacks(
+      //   onWeekTap: (week) {
+      //     _showSnackBar('Tapped on week $week.');
+      //     _updateVisibleDateRange(PredefinedVisibleDateRange.week);
+      //     _dateController.animateTo(
+      //       week.getDayOfWeek(DateTime.monday),
+      //       vsync: this,
+      //     );
+      //   },
+      //   onDateTap: (date) {
+      //     _showSnackBar('Tapped on date $date.');
+      //     _dateController.animateTo(date, vsync: this);
+      //   },
+      //   onDateBackgroundTap: (date) =>
+      //       _showSnackBar('Tapped on date background at $date.'),
+      //   onDateTimeBackgroundTap: (dateTime) =>
+      //       _showSnackBar('Tapped on date-time background at $dateTime.'),
+      //   onMultiDateHeaderOverflowTap: (date) =>
+      //       _showSnackBar('Tapped on the overflow of $date.'),
+      // ),
       theme: TimetableThemeData(
         context,
         // startOfWeek: DateTime.monday,
@@ -132,9 +135,7 @@ class _TimetableExampleState extends State<TimetableExample>
     final roundedTo = 15.minutes;
 
     return PartDayDraggableEvent(
-      onDragStart: () => setState(() {
-        _draggedEvents.add(event.copyWith(showOnTop: true));
-      }),
+      onDragStart: () => setState(() => _draggedEvents.add(event)),
       onDragUpdate: (dateTime) => setState(() {
         dateTime = dateTime.roundTimeToMultipleOf(roundedTo);
         final index = _draggedEvents.indexWhere((it) => it.id == event.id);

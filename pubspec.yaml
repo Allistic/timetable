@@ -6,7 +6,6 @@ repository: https://github.com/Allistic/timetable
 environment:
   sdk: '>=2.18.0 <3.0.0'
   flutter: '>=3.3.0'
-  
 
 dependencies:
   async: ^2.6.0
@@ -22,6 +21,7 @@ dependencies:
   tuple: ^2.0.0
 
 dev_dependencies:
+  dart_code_metrics: ^5.0.1
   flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter

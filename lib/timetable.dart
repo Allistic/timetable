@@ -1,5 +1,3 @@
-library remind_timetable;
-
 export 'src/callbacks.dart';
 export 'src/components/date_content.dart';
 export 'src/components/date_dividers.dart';
@@ -40,8 +38,8 @@ export 'src/time/time_range.dart';
 export 'src/time/zoom.dart';
 export 'src/utils.dart'
     show
-        DateWidgetBuilder,
         DateTimeTimetable,
+        DateWidgetBuilder,
         IntervalTimetable,
         MonthWidgetBuilder,
         NullableDateTimeTimetable,

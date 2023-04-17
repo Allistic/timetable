@@ -279,6 +279,8 @@ class _DefaultContentLeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = DefaultTimeController.of(context)!;
+
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
       child: TimeZoom(
@@ -286,6 +288,8 @@ class _DefaultContentLeading extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Builder(
             builder: (context) => TimeIndicators.hours(
+              firstHour: controller.maxRange.startTime.inHours,
+              lastHour: controller.maxRange.endTime.inHours,
               // `TimeIndicators.hours` overwrites the style provider's labels by
               // default, but here we want the user's style provider from the ambient
               // theme to take precedence.
