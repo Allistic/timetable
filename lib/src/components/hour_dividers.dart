@@ -89,7 +89,7 @@ class _HourDividersPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final heightPerHour = size.height / Duration.hoursPerDay;
+    final heightPerHour = size.height / controller.maxDuration.inHours;
     print("innerDateHours: ${controller.innerDateHours}");
     for (final h in controller.innerDateHours) {
       final y = h * heightPerHour;

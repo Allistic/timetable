@@ -288,11 +288,11 @@ class _DefaultContentLeading extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Builder(
             builder: (context) => TimeIndicators.hours(
+              firstHour: controller.maxRange.startTime.inHours,
+              lastHour: controller.maxRange.endTime.inHours,
               // `TimeIndicators.hours` overwrites the style provider's labels by
               // default, but here we want the user's style provider from the ambient
               // theme to take precedence.
-              firstHour: controller.maxRange.startTime.inHours,
-              lastHour: controller.maxRange.endTime.inHours,
               styleProvider:
                   TimetableTheme.of(context)?.timeIndicatorStyleProvider,
             ),

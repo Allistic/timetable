@@ -196,22 +196,33 @@ class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate
 
     double durationToY(Duration duration) {
       assert(duration.debugCheckIsValidTimetableTimeOfDay());
+      // don't tweak 1.days here
       return size.height * (duration / 1.days);
     }
 
     double timeToY(DateTime dateTime) {
       assert(dateTime.debugCheckIsValidTimetableDateTime());
 
-      if (dateTime < date) return 0;
-      if (dateTime.atStartOfDay > date) return size.height;
+      if (dateTime < date) {
+        // print("beforeDate");
+        return 0;
+      }
+      if (dateTime.atStartOfDay > date) {
+        final d = dateTime.timeOfDay;
+        // this is correct:
+        return durationToY(1.days) + durationToY(d);
+      }
       return durationToY(dateTime.timeOfDay);
     }
 
     for (final event in events) {
-      final top = timeToY(event.start)
-          .coerceAtMost(size.height - durationToY(style.minEventDuration))
-          .coerceAtMost(size.height - style.minEventHeight);
-      final height = durationToY(_durationOn(event, size.height)).clamp(0, size.height - top).toDouble();
+      final top = timeToY(event.start);
+      // tweak this:
+      // .coerceAtMost(size.height - durationToY(style.minEventDuration))
+      // .coerceAtMost(size.height - style.minEventHeight);
+
+      final duration = _durationOn(event, size.height);
+      final height = durationToY(duration).coerceAtLeast(0);
 
       final position = positions.eventPositions[event]!;
       final columnWidth = size.width / positions.groupColumnCounts[position.group];
@@ -345,7 +356,7 @@ class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate
 
   Duration _durationOn(E event, double height) {
     final start = event.start.coerceAtLeast(date);
-    final end = _actualEnd(event, height).coerceAtMost(date + maxViewDuration);
+    final end = _actualEnd(event, height).coerceAtMost(date + controller.maxRange.endTime);
     return end.difference(start);
   }
 

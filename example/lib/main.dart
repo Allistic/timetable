@@ -43,7 +43,7 @@ class _TimetableExampleState extends State<TimetableExample>
     // minDuration: 1.hours,
     // maxDuration: 10.hours,
     // initialRange: TimeRange(8.hours, 20.hours),
-    maxRange: TimeRange(-5.hours, 30.hours),
+    maxRange: TimeRange(-3.hours, 26.hours),
     // maxRange: TimeRange(6.hours, 18.hours),
   );
 
@@ -89,26 +89,26 @@ class _TimetableExampleState extends State<TimetableExample>
             .whereNotNull()
             .toList(),
       ]),
-      callbacks: TimetableCallbacks(
-        onWeekTap: (week) {
-          _showSnackBar('Tapped on week $week.');
-          _updateVisibleDateRange(PredefinedVisibleDateRange.week);
-          _dateController.animateTo(
-            week.getDayOfWeek(DateTime.monday),
-            vsync: this,
-          );
-        },
-        onDateTap: (date) {
-          _showSnackBar('Tapped on date $date.');
-          _dateController.animateTo(date, vsync: this);
-        },
-        onDateBackgroundTap: (date) =>
-            _showSnackBar('Tapped on date background at $date.'),
-        onDateTimeBackgroundTap: (dateTime) =>
-            _showSnackBar('Tapped on date-time background at $dateTime.'),
-        onMultiDateHeaderOverflowTap: (date) =>
-            _showSnackBar('Tapped on the overflow of $date.'),
-      ),
+      // callbacks: TimetableCallbacks(
+      //   onWeekTap: (week) {
+      //     _showSnackBar('Tapped on week $week.');
+      //     _updateVisibleDateRange(PredefinedVisibleDateRange.week);
+      //     _dateController.animateTo(
+      //       week.getDayOfWeek(DateTime.monday),
+      //       vsync: this,
+      //     );
+      //   },
+      //   onDateTap: (date) {
+      //     _showSnackBar('Tapped on date $date.');
+      //     _dateController.animateTo(date, vsync: this);
+      //   },
+      //   onDateBackgroundTap: (date) =>
+      //       _showSnackBar('Tapped on date background at $date.'),
+      //   onDateTimeBackgroundTap: (dateTime) =>
+      //       _showSnackBar('Tapped on date-time background at $dateTime.'),
+      //   onMultiDateHeaderOverflowTap: (date) =>
+      //       _showSnackBar('Tapped on the overflow of $date.'),
+      // ),
       theme: TimetableThemeData(
         context,
         // startOfWeek: DateTime.monday,

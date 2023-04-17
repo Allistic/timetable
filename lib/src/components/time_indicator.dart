@@ -4,10 +4,8 @@ import 'package:black_hole_flutter/black_hole_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../config.dart';
-import '../theme.dart';
+import '../../timetable.dart';
 import '../utils.dart';
-import 'time_indicators.dart';
 
 /// A widget that displays a label at the given time.
 ///
@@ -54,7 +52,7 @@ class TimeIndicator extends StatelessWidget {
     }();
 
     // print("time: $time - $convertedTime");
-    final style = this.style ?? TimetableTheme.orDefaultOf(context).timeIndicatorStyleProvider(time);
+    final style = this.style ?? TimetableTheme.orDefaultOf(context).timeIndicatorStyleProvider(convertedTime);
 
     return Text(
       style.label,
@@ -94,9 +92,8 @@ class TimeIndicatorStyle {
           ),
       label: label ??
           () {
-            return time.toString();
-            // context.dependOnTimetableLocalizations();
-            // return alwaysUse24HourFormat ? TimeIndicator.formatHour24(time) : TimeIndicator.formatHour(time);
+            context.dependOnTimetableLocalizations();
+            return alwaysUse24HourFormat ? TimeIndicator.formatHour24(time) : TimeIndicator.formatHour(time);
           }(),
     );
   }
