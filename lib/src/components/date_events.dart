@@ -186,7 +186,7 @@ class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate
 
   final DateEventsStyle style;
 
-  Duration get maxViewDuration => 1.days; //controller.maxRange.duration;
+  Duration get maxViewDuration => controller.maxRange.duration;
 
   @override
   void performLayout(Size size) {
@@ -194,32 +194,65 @@ class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate
 
     final positions = _calculatePositions(size.height);
 
+    /// Calculates how many pixels in the vertical axis a specific [duration] equals
     double durationToY(Duration duration) {
       assert(duration.debugCheckIsValidTimetableTimeOfDay());
-      // don't tweak 1.days here
-      return size.height * (duration / 1.days);
+
+      final percentOfView = duration / maxViewDuration;
+      return size.height * percentOfView;
     }
 
+    /// Calculates how many pixels in the vertical axis a specific [dateTime] equals
     double timeToY(DateTime dateTime) {
+      // This algorithm works for calculation as expected, but some events still won't show, this is because of positions
       assert(dateTime.debugCheckIsValidTimetableDateTime());
 
-      if (dateTime < date) {
-        // print("beforeDate");
-        return 0;
+      final earliestDateTime = date.atStartOfDay + controller.maxRange.startTime;
+      final latestDateTime = date.atStartOfDay + controller.maxRange.endTime;
+
+      // print("earliestDateTime: $earliestDateTime - latestDateTime: $latestDateTime");
+
+      if (dateTime < earliestDateTime) return 0; // the column before
+      if (dateTime > latestDateTime) return size.height; // the column after
+
+      final delta = dateTime.difference(earliestDateTime);
+
+      if (dateTime.atStartOfDay < date) {
+        // before midnight this day
+
+        /// the delta, the offset from the very first hour in column
+        // final durationDelta = earliestDateTime.difference(dateTime);
+
+        final px = durationToY(delta);
+
+        // print("Before midnight: $dateTime - today: $date - delta: $delta - px: $px");
+
+        return px;
       }
       if (dateTime.atStartOfDay > date) {
-        final d = dateTime.timeOfDay;
-        // this is correct:
-        return durationToY(1.days) + durationToY(d);
+        // after midnight this day
+
+        /// the delta, the offset from the very first hour in column
+        // final delta = latestDateTime.difference(dateTime);
+
+        final px = durationToY(delta);
+
+        // print("after midnight: $dateTime - today: $date - delta: $delta - px: $px");
+
+        return px;
       }
-      return durationToY(dateTime.timeOfDay);
+
+      // midday
+      return durationToY(delta);
     }
 
     for (final event in events) {
-      final top = timeToY(event.start);
-      // tweak this:
-      // .coerceAtMost(size.height - durationToY(style.minEventDuration))
-      // .coerceAtMost(size.height - style.minEventHeight);
+      final top = timeToY(event.start)
+          // // tweak this:
+          .coerceAtMost(size.height - durationToY(style.minEventDuration))
+          .coerceAtMost(size.height - style.minEventHeight);
+
+      print("forDate: $date time: ${event.start} - topOffset: $top");
 
       final duration = _durationOn(event, size.height);
       final height = durationToY(duration).coerceAtLeast(0);

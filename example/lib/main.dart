@@ -2,8 +2,8 @@ import 'package:black_hole_flutter/black_hole_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:time/time.dart';
 import 'package:remind_timetable/timetable.dart';
+import 'package:time/time.dart';
 
 // ignore: unused_import
 import 'positioning_demo.dart';

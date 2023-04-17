@@ -48,7 +48,20 @@ import 'package:remind_timetable/timetable.dart';
 // });
 
 final positioningDemoEvents = <BasicEvent>[
-  _DemoEvent(1, 1, 1.hours, 3.hours),
+  // _DemoEvent(1, 1, 1.hours, 3.hours),
+  _DemoEvent(0, -3, -3.hours, -2.hours),
+  _DemoEvent(0, -2, -2.hours, -1.hours),
+  _DemoEvent(0, -1, -1.hours, 0.hours),
+  _DemoEvent(0, 0, 0.hours, 1.hours),
+  _DemoEvent(0, 1, 1.hours, 2.hours),
+  _DemoEvent(0, 2, 2.hours, 3.hours),
+  _DemoEvent(0, 3, 3.hours, 4.hours),
+  _DemoEvent(0, 4, 4.hours, 5.hours),
+  _DemoEvent(0, 5, 5.hours, 6.hours),
+  _DemoEvent(0, 6, 6.hours, 7.hours),
+  _DemoEvent(0, 18, 18.hours, 19.hours),
+  _DemoEvent(0, 23, 23.hours, 24.hours),
+  _DemoEvent(0, 24, 24.hours, 25.hours),
   // _DemoEvent(0, 0, const Duration(hours: 10), const Duration(hours: 11)),
   // _DemoEvent(0, 1, const Duration(hours: 11), const Duration(hours: 12)),
   // _DemoEvent(0, 2, const Duration(hours: 12), const Duration(hours: 13)),

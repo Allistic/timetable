@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import '../config.dart';
 import '../date/controller.dart';
 import '../theme.dart';
+import '../time/controller.dart';
 import '../utils.dart';
 
 /// A widget that displays an indicator at the current date and time.
@@ -36,7 +37,8 @@ class NowIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       foregroundPainter: _NowIndicatorPainter(
-        controller: DefaultDateController.of(context)!,
+        dateController: DefaultDateController.of(context)!,
+        timeController: DefaultTimeController.of(context)!,
         style: style ?? TimetableTheme.orDefaultOf(context).nowIndicatorStyle,
         devicePixelRatio: context.mediaQuery.devicePixelRatio,
       ),
@@ -181,8 +183,7 @@ class EmptyNowIndicatorShape extends NowIndicatorShape {
 /// * [TriangleNowIndicatorShape], which draws a small triangle.
 /// * [EmptyNowIndicatorShape], which draws nothing.
 class CircleNowIndicatorShape extends NowIndicatorShape {
-  CircleNowIndicatorShape({required this.color, this.radius = 4})
-      : _paint = Paint()..color = color;
+  CircleNowIndicatorShape({required this.color, this.radius = 4}) : _paint = Paint()..color = color;
 
   final Color color;
   final double radius;
@@ -220,9 +221,7 @@ class CircleNowIndicatorShape extends NowIndicatorShape {
   int get hashCode => Object.hash(color, radius);
   @override
   bool operator ==(Object other) {
-    return other is CircleNowIndicatorShape &&
-        color == other.color &&
-        radius == other.radius;
+    return other is CircleNowIndicatorShape && color == other.color && radius == other.radius;
   }
 }
 
@@ -233,8 +232,7 @@ class CircleNowIndicatorShape extends NowIndicatorShape {
 /// * [TriangleNowIndicatorShape], which draws a small triangle.
 /// * [EmptyNowIndicatorShape], which draws nothing.
 class TriangleNowIndicatorShape extends NowIndicatorShape {
-  TriangleNowIndicatorShape({required this.color, this.size = 8})
-      : _paint = Paint()..color = color;
+  TriangleNowIndicatorShape({required this.color, this.size = 8}) : _paint = Paint()..color = color;
 
   final Color color;
   final double size;
@@ -277,9 +275,7 @@ class TriangleNowIndicatorShape extends NowIndicatorShape {
   int get hashCode => Object.hash(color, size);
   @override
   bool operator ==(Object other) {
-    return other is TriangleNowIndicatorShape &&
-        color == other.color &&
-        size == other.size;
+    return other is TriangleNowIndicatorShape && color == other.color && size == other.size;
   }
 }
 
@@ -287,18 +283,21 @@ class TriangleNowIndicatorShape extends NowIndicatorShape {
 
 class _NowIndicatorPainter extends CustomPainter {
   factory _NowIndicatorPainter({
-    required DateController controller,
+    required DateController dateController,
+    required TimeController timeController,
     required NowIndicatorStyle style,
     required double devicePixelRatio,
   }) =>
       _NowIndicatorPainter._(
-        controller: controller,
+        dateController: dateController,
+        timeController: timeController,
         style: style,
         devicePixelRatio: devicePixelRatio,
         repaintNotifier: ValueNotifier<DateTime>(DateTimeTimetable.now()),
       );
   _NowIndicatorPainter._({
-    required this.controller,
+    required this.dateController,
+    required this.timeController,
     required this.style,
     required this.devicePixelRatio,
     required ValueNotifier<DateTime> repaintNotifier,
@@ -306,9 +305,10 @@ class _NowIndicatorPainter extends CustomPainter {
           ..color = style.lineColor
           ..strokeWidth = style.lineWidth,
         _repaintNotifier = repaintNotifier,
-        super(repaint: Listenable.merge([controller, repaintNotifier]));
+        super(repaint: Listenable.merge([dateController, repaintNotifier]));
 
-  final DateController controller;
+  final DateController dateController;
+  final TimeController timeController;
   final Paint _paint;
   final NowIndicatorStyle style;
   final double devicePixelRatio;
@@ -318,11 +318,10 @@ class _NowIndicatorPainter extends CustomPainter {
     unawaited(_repaint?.cancel());
     _repaint = null;
 
-    final pageValue = controller.value;
+    final pageValue = dateController.value;
     final dateWidth = size.width / pageValue.visibleDayCount;
     final now = DateTimeTimetable.now();
-    final temporalXOffset =
-        now.copyWith(isUtc: true).atStartOfDay.page - pageValue.page;
+    final temporalXOffset = now.copyWith(isUtc: true).atStartOfDay.page - pageValue.page;
     final left = temporalXOffset * dateWidth;
     final right = left + dateWidth;
 
@@ -332,14 +331,14 @@ class _NowIndicatorPainter extends CustomPainter {
     final actualLeft = left.coerceAtLeast(0);
     final actualRight = right.coerceAtMost(size.width);
 
-    final y = now.timeOfDay / 1.days * size.height;
+    final y = now.timeOfDay / timeController.maxRange.duration * size.height;
     canvas.drawLine(Offset(actualLeft, y), Offset(actualRight, y), _paint);
     style.shape.paint(canvas, size, left, right, y);
 
     // Schedule the repaint so that our position has moved at most half a device
     // pixel.
     final maxDistance = 0.5 / devicePixelRatio;
-    final delay = 1.days * (maxDistance / size.height);
+    final delay = timeController.maxRange.duration * (maxDistance / size.height);
     _repaint = CancelableOperation.fromFuture(
       Future<void>.delayed(
         delay,
@@ -374,6 +373,5 @@ class _NowIndicatorPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_NowIndicatorPainter oldDelegate) =>
-      style != oldDelegate.style ||
-      devicePixelRatio != oldDelegate.devicePixelRatio;
+      style != oldDelegate.style || devicePixelRatio != oldDelegate.devicePixelRatio;
 }
