@@ -194,6 +194,9 @@ class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate
 
     final positions = _calculatePositions(size.height);
 
+    final earliestDateTime = date.atStartOfDay + controller.maxRange.startTime;
+    final latestDateTime = date.atStartOfDay + controller.maxRange.endTime;
+
     /// Calculates how many pixels in the vertical axis a specific [duration] equals
     double durationToY(Duration duration) {
       assert(duration.debugCheckIsValidTimetableTimeOfDay());
@@ -207,42 +210,12 @@ class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate
       // This algorithm works for calculation as expected, but some events still won't show, this is because of positions
       assert(dateTime.debugCheckIsValidTimetableDateTime());
 
-      final earliestDateTime = date.atStartOfDay + controller.maxRange.startTime;
-      final latestDateTime = date.atStartOfDay + controller.maxRange.endTime;
-
       // print("earliestDateTime: $earliestDateTime - latestDateTime: $latestDateTime");
 
       if (dateTime < earliestDateTime) return 0; // the column before
       if (dateTime > latestDateTime) return size.height; // the column after
 
       final delta = dateTime.difference(earliestDateTime);
-
-      if (dateTime.atStartOfDay < date) {
-        // before midnight this day
-
-        /// the delta, the offset from the very first hour in column
-        // final durationDelta = earliestDateTime.difference(dateTime);
-
-        final px = durationToY(delta);
-
-        // print("Before midnight: $dateTime - today: $date - delta: $delta - px: $px");
-
-        return px;
-      }
-      if (dateTime.atStartOfDay > date) {
-        // after midnight this day
-
-        /// the delta, the offset from the very first hour in column
-        // final delta = latestDateTime.difference(dateTime);
-
-        final px = durationToY(delta);
-
-        // print("after midnight: $dateTime - today: $date - delta: $delta - px: $px");
-
-        return px;
-      }
-
-      // midday
       return durationToY(delta);
     }
 
@@ -252,10 +225,13 @@ class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate
           .coerceAtMost(size.height - durationToY(style.minEventDuration))
           .coerceAtMost(size.height - style.minEventHeight);
 
-      print("forDate: $date time: ${event.start} - topOffset: $top");
-
-      final duration = _durationOn(event, size.height);
-      final height = durationToY(duration).coerceAtLeast(0);
+      if (event.end < earliestDateTime || event.start > latestDateTime) {
+        // event out of scope, junkLayout it
+        layoutChild(event, BoxConstraints.tight(Size.zero));
+        positionChild(event, Offset.zero);
+        continue;
+      }
+      final height = durationToY(event.duration).coerceAtLeast(0);
 
       final position = positions.eventPositions[event]!;
       final columnWidth = size.width / positions.groupColumnCounts[position.group];
@@ -264,6 +240,7 @@ class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate
       final width = columnWidth * position.columnSpan - position.index * style.stackedEventSpacing;
 
       final childSize = Size(width.coerceAtLeast(minWidth), height);
+      // print("forDate: $date time: ${event.start} - topOffset: $top - Size: ${childSize.height}x${childSize.width}");
       layoutChild(event, BoxConstraints.tight(childSize));
       positionChild(event, Offset(left, top));
     }
