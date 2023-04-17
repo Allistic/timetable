@@ -79,13 +79,14 @@ class TimeIndicators extends StatelessWidget {
     }
 
     final children = <TimeIndicatorsChild>[];
-    print("firstIndex: $firstIndex - $lastIndex");
+    // print("firstIndex: $firstIndex - $lastIndex - range: ${firstIndex.rangeTo(lastIndex)}");
     for (final i in firstIndex.rangeTo(lastIndex)) {
-      // print(i);
+      final time = indexToTime(i);
+      // print("i:$i - time: $time");
 
       children.add(
         _buildChild(
-          indexToTime(i),
+          time,
           getAlignmentFor(i),
           styleProvider,
           formatter,
@@ -106,6 +107,8 @@ class TimeIndicators extends StatelessWidget {
     String Function(Duration time) formatter,
   ) {
     assert(time.debugCheckIsValidTimetableTimeOfDay());
+
+    // print("_buildChild: time: $time");
 
     return TimeIndicatorsChild(
       time: time,
@@ -267,7 +270,8 @@ class _TimeIndicatorsLayout extends RenderBox
       final time = data.time!;
       final alignment = data.alignment!.resolve(textDirection);
 
-      final yAnchor = time / 1.days * size.height;
+      final offsetDuration = time - controller.maxRange.startTime;
+      final yAnchor = offsetDuration / controller.maxRange.duration * size.height;
       final outerRect = Rect.fromLTRB(
         0,
         yAnchor - child.size.height,
