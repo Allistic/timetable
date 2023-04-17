@@ -331,7 +331,7 @@ class _NowIndicatorPainter extends CustomPainter {
     final actualLeft = left.coerceAtLeast(0);
     final actualRight = right.coerceAtMost(size.width);
 
-    final y = now.timeOfDay / timeController.maxRange.duration * size.height;
+    final y = (now.timeOfDay - timeController.maxRange.startTime) / timeController.maxRange.duration * size.height;
     canvas.drawLine(Offset(actualLeft, y), Offset(actualRight, y), _paint);
     style.shape.paint(canvas, size, left, right, y);
 
