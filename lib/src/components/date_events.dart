@@ -173,6 +173,11 @@ class DateEventsStyle {
   }
 }
 
+/// This is here because it shouldn't be tampered with anywhere else
+DateTime _asUtc(DateTime datetime) {
+  return datetime.copyWith(isUtc: true);
+}
+
 class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate {
   _DayEventsLayoutDelegate(this.date, this.events, this.style, this.controller)
       : assert(date.debugCheckIsValidTimetableDate());
@@ -215,7 +220,7 @@ class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate
       if (dateTime < earliestDateTime) return 0; // the column before
       if (dateTime > latestDateTime) return size.height; // the column after
 
-      final delta = dateTime.difference(earliestDateTime);
+      final delta = _asUtc(dateTime).difference(_asUtc(earliestDateTime));
       return durationToY(delta);
     }
 

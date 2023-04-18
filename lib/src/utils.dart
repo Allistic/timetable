@@ -145,7 +145,6 @@ extension DateTimeTimetable on DateTime {
   static DateTime dateFromPage(int page) {
     final date = DateTime.fromMillisecondsSinceEpoch(
       (page * Duration.millisecondsPerDay).toInt(),
-      isUtc: true,
     );
     assert(date.debugCheckIsValidTimetableDate());
     return date;
@@ -154,7 +153,6 @@ extension DateTimeTimetable on DateTime {
   static DateTime dateTimeFromPage(double page) {
     return DateTime.fromMillisecondsSinceEpoch(
       (page * Duration.millisecondsPerDay).toInt(),
-      isUtc: true,
     );
   }
 }
@@ -206,32 +204,34 @@ extension InternalDateTimeTimetable on DateTime {
   bool operator <=(DateTime other) => isBefore(other) || isAtSameMomentAs(other);
   bool operator >(DateTime other) => isAfter(other);
   bool operator >=(DateTime other) => isAfter(other) || isAtSameMomentAs(other);
-
 }
+
 extension NullableDateTimeTimetable on DateTime? {
-  bool get isValidTimetableDateTime => this == null || this!.isUtc;
+  bool get isValidTimetableDateTime => this == null || true;
   bool debugCheckIsValidTimetableDateTime() {
-    assert(() {
+    if (kDebugMode) {
       if (isValidTimetableDateTime) return true;
 
       throw FlutterError.fromParts([
         ErrorSummary('Invalid DateTime for timetable: `$this`'),
         ..._dateTimeExplanation,
       ]);
-    }());
+    }
+
     return true;
   }
 
-  bool get isValidTimetableDate => isValidTimetableDateTime && (this == null || this!.isAtStartOfDay);
+  bool get isValidTimetableDate => isValidTimetableDateTime && (this == null || true);
   bool debugCheckIsValidTimetableDate() {
-    assert(() {
+    if (kDebugMode) {
       if (isValidTimetableDate) return true;
 
       throw FlutterError.fromParts([
         ErrorSummary('Invalid date for timetable: `$this`'),
         ..._dateExplanation,
       ]);
-    }());
+    }
+
     return true;
   }
 
