@@ -122,6 +122,7 @@ class _TimetableExampleState extends State<TimetableExample>
       ),
       theme: TimetableThemeData(
         context,
+        multiDateTimetableStyle: MultiDateTimetableStyle(context, contentBehindHead: true),
         // startOfWeek: DateTime.monday,
         // dateDividersStyle: DateDividersStyle(
         //   context,

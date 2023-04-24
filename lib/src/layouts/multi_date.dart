@@ -128,13 +128,24 @@ class _MultiDateTimetableState<E extends Event> extends State<MultiDateTimetable
 
     return LayoutBuilder(builder: (context, constraints) {
       final maxHeaderHeight = constraints.maxHeight * style.maxHeaderFraction;
-      return Stack(children: [
-        Positioned.fill(child: content),
-        ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: maxHeaderHeight),
-          child: header,
-        ),
-      ]);
+
+      if (style.contentBehindHead) {
+        return Stack(children: [
+          Positioned.fill(child: content),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: maxHeaderHeight),
+            child: header,
+          ),
+        ]);
+      } else {
+        return Column(children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(maxHeight: maxHeaderHeight),
+            child: header,
+          ),
+          Expanded(child: content),
+        ]);
+      }
     });
   }
 }
@@ -230,13 +241,15 @@ class MultiDateTimetableStyle {
     // ignore: avoid_unused_constructor_parameters
     BuildContext context, {
     double? maxHeaderFraction,
+    bool? contentBehindHead,
   }) {
     return MultiDateTimetableStyle.raw(
       maxHeaderFraction: maxHeaderFraction ?? 0.5,
+      contentBehindHead: contentBehindHead ?? false,
     );
   }
 
-  const MultiDateTimetableStyle.raw({this.maxHeaderFraction = 0.5})
+  const MultiDateTimetableStyle.raw({this.maxHeaderFraction = 0.5, this.contentBehindHead = false})
       : assert(0 < maxHeaderFraction),
         assert(maxHeaderFraction < 1);
 
@@ -251,6 +264,9 @@ class MultiDateTimetableStyle {
   /// * [MultiDateEventHeaderStyle.maxEventRows], which configures the maximum
   ///   number of rows that header events can allocate.
   final double maxHeaderFraction;
+
+  /// Wheter to show [contentBuilder] behind the [headerBuilder]
+  final bool contentBehindHead;
 
   MultiDateTimetableStyle copyWith({double? maxHeaderFraction}) {
     return MultiDateTimetableStyle.raw(

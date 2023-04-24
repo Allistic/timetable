@@ -369,11 +369,6 @@ class _DayEventsLayoutDelegate<E extends Event> extends MultiChildLayoutDelegate
         .coerceAtLeast(event.start + minDurationForHeight);
   }
 
-  Duration _durationOn(E event, double height) {
-    final start = event.start.coerceAtLeast(date);
-    final end = _actualEnd(event, height).coerceAtMost(date + controller.maxRange.endTime);
-    return end.difference(start);
-  }
 
   @override
   bool shouldRelayout(_DayEventsLayoutDelegate<E> oldDelegate) {

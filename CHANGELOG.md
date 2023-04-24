@@ -17,6 +17,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### 📦 Build & CI
 -->
 
+## 1.1.0-alpha · 2023-04-18
+### 🎉 New Features
+* The `TimeController` now supports time Ranges of up to `2.days`.
+  Events get displayed accordingly, at the end of the previous 'day'/column and the beginning of the current column.
+* The content can now scroll beneath the header.
+  To use that use the `MultiDateTimetableStyle`s new `contentBehindHead` property
+* The timetable now supports events being not in utc, the conversion is now handled internally.
+
 ## 1.0.0-alpha.11 · 2023-01-24
 
 ### ⚠️ BREAKING CHANGES

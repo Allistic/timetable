@@ -46,14 +46,12 @@ class MultiDateEventHeader<E extends Event> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = this.style ??
-        TimetableTheme.orDefaultOf(context).multiDateEventHeaderStyle;
+    final style = this.style ?? TimetableTheme.orDefaultOf(context).multiDateEventHeaderStyle;
 
     final child = LayoutBuilder(builder: (context, constraints) {
       var maxEventRows = style.maxEventRows;
       if (constraints.maxHeight.isFinite) {
-        final maxRowsFromHeight =
-            (constraints.maxHeight / style.eventHeight).floor();
+        final maxRowsFromHeight = (constraints.maxHeight / style.eventHeight).floor();
         final maxEventRowsFromHeight = (maxRowsFromHeight - 1).coerceAtLeast(0);
         maxEventRows = maxEventRowsFromHeight.coerceAtMost(maxEventRows);
       }
@@ -85,24 +83,20 @@ class MultiDateEventHeader<E extends Event> extends StatelessWidget {
     required double eventHeight,
     required int maxEventRows,
   }) {
-    final onBackgroundTap = this.onBackgroundTap ??
-        DefaultTimetableCallbacks.of(context)?.onDateBackgroundTap;
+    final onBackgroundTap = this.onBackgroundTap ?? DefaultTimetableCallbacks.of(context)?.onDateBackgroundTap;
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTapUp: onBackgroundTap != null
           ? (details) {
-              final tappedCell =
-                  details.localPosition.dx / width * pageValue.visibleDayCount;
+              final tappedCell = details.localPosition.dx / width * pageValue.visibleDayCount;
               final page = (pageValue.page + tappedCell).floor();
               onBackgroundTap(DateTimeTimetable.dateFromPage(page));
             }
           : null,
       child: _MultiDateEventHeaderEvents<E>(
         pageValue: pageValue,
-        events:
-            DefaultEventProvider.of<E>(context)?.call(pageValue.visibleDates) ??
-                [],
+        events: DefaultEventProvider.of<E>(context)?.call(pageValue.visibleDates) ?? [],
         eventHeight: eventHeight,
         maxEventRows: maxEventRows,
       ),
@@ -194,12 +188,10 @@ class _MultiDateEventHeaderEvents<E extends Event> extends StatefulWidget {
   final int maxEventRows;
 
   @override
-  State<_MultiDateEventHeaderEvents<E>> createState() =>
-      _MultiDateEventHeaderEventsState<E>();
+  State<_MultiDateEventHeaderEvents<E>> createState() => _MultiDateEventHeaderEventsState<E>();
 }
 
-class _MultiDateEventHeaderEventsState<E extends Event>
-    extends State<_MultiDateEventHeaderEvents<E>> {
+class _MultiDateEventHeaderEventsState<E extends Event> extends State<_MultiDateEventHeaderEvents<E>> {
   final _yPositions = <E, int?>{};
   final _maxEventPositions = <int, int>{};
 
@@ -214,8 +206,7 @@ class _MultiDateEventHeaderEventsState<E extends Event>
     if (oldWidget.pageValue != widget.pageValue ||
         oldWidget.eventHeight != widget.eventHeight ||
         oldWidget.maxEventRows != widget.maxEventRows ||
-        !const DeepCollectionEquality()
-            .equals(oldWidget.events, widget.events)) {
+        !const DeepCollectionEquality().equals(oldWidget.events, widget.events)) {
       _updateEventPositions(oldMaxEventRows: oldWidget.maxEventRows);
     }
     super.didUpdateWidget(oldWidget);
@@ -228,8 +219,7 @@ class _MultiDateEventHeaderEventsState<E extends Event>
           event.end.page.ceil() <= widget.pageValue.firstVisibleDate.page;
     });
     _maxEventPositions.removeWhere((date, _) {
-      return date < widget.pageValue.firstVisiblePage ||
-          date > widget.pageValue.lastVisiblePage;
+      return date < widget.pageValue.firstVisiblePage || date > widget.pageValue.lastVisiblePage;
     });
 
     // Remove old events.
@@ -246,12 +236,9 @@ class _MultiDateEventHeaderEventsState<E extends Event>
 
     // Insert new events and, in case [maxEventRows] increased, display
     // previously overflowed events.
-    final sortedEvents = widget.events
-        .where((it) => _yPositions[it] == null)
-        .sortedByStartLength();
+    final sortedEvents = widget.events.where((it) => _yPositions[it] == null).sortedByStartLength();
 
-    Iterable<E> eventsWithPosition(int y) =>
-        _yPositions.entries.where((it) => it.value == y).map((it) => it.key);
+    Iterable<E> eventsWithPosition(int y) => _yPositions.entries.where((it) => it.value == y).map((it) => it.key);
 
     outer:
     for (final event in sortedEvents) {
@@ -259,8 +246,7 @@ class _MultiDateEventHeaderEventsState<E extends Event>
       final interval = event.interval.dateInterval;
       while (y < widget.maxEventRows) {
         final intersectingEvents = eventsWithPosition(y);
-        if (intersectingEvents
-            .every((it) => !it.interval.dateInterval.intersects(interval))) {
+        if (intersectingEvents.every((it) => !it.interval.dateInterval.intersects(interval))) {
           _yPositions[event] = y;
           continue outer;
         }
@@ -276,16 +262,14 @@ class _MultiDateEventHeaderEventsState<E extends Event>
           .where((it) => it.key.interval.intersects(dayInterval))
           .map((it) => it.value ?? widget.maxEventRows)
           .maxOrNull;
-      _maxEventPositions[date.datePage] =
-          maxEventPosition != null ? maxEventPosition + 1 : 0;
+      _maxEventPositions[date.datePage] = maxEventPosition != null ? maxEventPosition + 1 : 0;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final allDayBuilder = DefaultEventBuilder.allDayOf<E>(context)!;
-    final allDayOverflowBuilder =
-        DefaultEventBuilder.allDayOverflowOf<E>(context)!;
+    final allDayOverflowBuilder = DefaultEventBuilder.allDayOverflowOf<E>(context)!;
     return _EventsWidget(
       pageValue: widget.pageValue,
       eventHeight: widget.eventHeight,
@@ -305,8 +289,7 @@ class _MultiDateEventHeaderEventsState<E extends Event>
 
           final dateInterval = date.fullDayInterval;
           final overflowedEvents = widget.events.where((it) {
-            return it.interval.dateInterval.intersects(dateInterval) &&
-                _yPositions[it] == null;
+            return it.interval.dateInterval.intersects(dateInterval) && _yPositions[it] == null;
           }).toList();
           return _EventParentDataWidget(
             key: ValueKey(date),
@@ -324,12 +307,9 @@ class _MultiDateEventHeaderEventsState<E extends Event>
       context,
       event,
       AllDayEventLayoutInfo(
-        hiddenStartDays:
-            (widget.pageValue.page - event.start.page).coerceAtLeast(0),
-        hiddenEndDays: (event.end.page.ceil() -
-                widget.pageValue.page -
-                widget.pageValue.visibleDayCount)
-            .coerceAtLeast(0),
+        hiddenStartDays: (widget.pageValue.page - event.start.page).coerceAtLeast(0),
+        hiddenEndDays:
+            (event.end.page.ceil() - widget.pageValue.page - widget.pageValue.visibleDayCount).coerceAtLeast(0),
       ),
     );
   }
@@ -354,8 +334,7 @@ class _EventParentDataWidget extends ParentDataWidget<_EventParentData> {
     assert(renderObject.parentData is _EventParentData);
     final parentData = renderObject.parentData! as _EventParentData;
 
-    if (parentData.dateInterval == dateInterval &&
-        parentData.yPosition == yPosition) {
+    if (parentData.dateInterval == dateInterval && parentData.yPosition == yPosition) {
       return;
     }
 
@@ -470,11 +449,9 @@ class _EventsLayout extends RenderBox
   }
 
   @override
-  double computeMinIntrinsicHeight(double width) =>
-      _parallelEventCount() * eventHeight;
+  double computeMinIntrinsicHeight(double width) => _parallelEventCount() * eventHeight;
   @override
-  double computeMaxIntrinsicHeight(double width) =>
-      _parallelEventCount() * eventHeight;
+  double computeMaxIntrinsicHeight(double width) => _parallelEventCount() * eventHeight;
 
   @override
   void performLayout() {
@@ -497,8 +474,7 @@ class _EventsLayout extends RenderBox
       final startPage = dateInterval.start.page;
       final left = ((startPage - pageValue.page) * dateWidth).coerceAtLeast(0);
       final endPage = dateInterval.end.page.ceilToDouble();
-      final right =
-          ((endPage - pageValue.page) * dateWidth).coerceAtMost(size.width);
+      final right = ((endPage - pageValue.page) * dateWidth).coerceAtMost(size.width);
 
       child.layout(
         BoxConstraints(
@@ -509,19 +485,14 @@ class _EventsLayout extends RenderBox
         ),
         parentUsesSize: true,
       );
-      final actualLeft = startPage >= pageValue.page
-          ? left
-          : left.coerceAtMost(right - child.size.width);
+      final actualLeft = startPage >= pageValue.page ? left : left.coerceAtMost(right - child.size.width);
       data.offset = Offset(actualLeft, data.yPosition! * eventHeight);
     }
   }
 
   double _parallelEventCount() {
     int parallelEventsFrom(int page) {
-      return page
-          .rangeTo(page + pageValue.visibleDayCount - 1)
-          .map((it) => _maxEventPositions[it]!)
-          .max;
+      return page.rangeTo(page + pageValue.visibleDayCount - 1).map((it) => _maxEventPositions[it]!).max;
     }
 
     final oldParallelEvents = parallelEventsFrom(pageValue.page.floor());
@@ -535,8 +506,7 @@ class _EventsLayout extends RenderBox
       defaultHitTestChildren(result, position: position);
 
   @override
-  void paint(PaintingContext context, Offset offset) =>
-      defaultPaint(context, offset);
+  void paint(PaintingContext context, Offset offset) => defaultPaint(context, offset);
 }
 
 extension _ParentData on RenderBox {

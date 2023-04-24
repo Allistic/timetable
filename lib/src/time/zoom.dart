@@ -142,11 +142,8 @@ class _TimeZoomState extends State<TimeZoom> with SingleTickerProviderStateMixin
                 // Layouts the child so only [_controller.maxRange] is
                 // visible.
 
-                // TODO: the 1.days here is problematic, because the expression will become less than 1 if the range is greater than 1 day
                 final innerChildHeight = _outerChildHeight; // *
-                // (1.days / _controller!.maxRange.duration);
-                final innerOffset = 0.0; //-innerChildHeight *
-                // (_controller!.maxRange.startTime / 1.days);
+                const innerOffset = 0.0;
 
                 return SizedBox(
                   height: _outerChildHeight,
