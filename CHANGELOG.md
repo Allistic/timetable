@@ -16,6 +16,14 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### 🏗️ Refactoring
 ### 📦 Build & CI
 -->
+
+## 1.1.2-alpha · 2023-04-24
+### 🐛 Bug Fixes
+* `resolveOffset` returned wrong values, based on how much earlier the TimeController's min Duration starts.
+* `HourDividers` stopped to soon
+### 📜 Documentation updates
+* updated example app
+
 ## 1.1.1-alpha · 2023-04-24
 ### 🎉 New Features
 * `MultiDateContentGeometry` now supports `double durationToY(Duration duration)` to calculate the height of some Duration based on the current zoom.  
@@ -29,6 +37,8 @@ This is analogus to `DateTime resolveOffset(Offset globalOffset)`, just for Dura
 * The content can now scroll beneath the header.
   To use that use the `MultiDateTimetableStyle`s new `contentBehindHead` property
 * The timetable now supports events being not in utc, the conversion is now handled internally.
+### 📜 Documentation updates
+* updated example app
 
 ## 1.0.0-alpha.11 · 2023-01-24
 

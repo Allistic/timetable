@@ -120,7 +120,13 @@ class MultiDateContentGeometry extends State<MultiDateContentGeometryWidget> {
     final localOffset = renderBox.globalToLocal(globalOffset);
     final pageValue = DefaultDateController.of(context)!.value;
     final page = (pageValue.page + localOffset.dx / size.width * pageValue.visibleDayCount).floor();
-    return DateTimeTimetable.dateFromPage(page) + 1.days * (localOffset.dy / size.height);
+
+    final tCtrlr = DefaultTimeController.of(context)!;
+    final maxDuration = tCtrlr.maxRange.duration;
+    final percentage =
+        (localOffset.dy + durationToY(tCtrlr.maxRange.startTime - (tCtrlr.maxRange.endTime - 1.days))) / size.height;
+
+    return DateTimeTimetable.dateFromPage(page) + maxDuration * percentage;
   }
 
   // there has to be a configuration above, so we can safely assume non-null

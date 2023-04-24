@@ -62,6 +62,18 @@ final positioningDemoEvents = <BasicEvent>[
   _DemoEvent(0, 18, 18.hours, 19.hours),
   _DemoEvent(0, 23, 23.hours, 24.hours),
   _DemoEvent(0, 24, 24.hours, 25.hours),
+  BasicEvent(
+      id: "123",
+      title: "My Event at 12 UTC - 13 UTC",
+      backgroundColor: Colors.greenAccent,
+      start: DateTime.now().atStartOfDay.copyWith(isUtc: true, hour: 12),
+      end: DateTime.now().atStartOfDay.copyWith(isUtc: true, hour: 13)),
+  BasicEvent(
+      id: "124",
+      title: "My Event at 12 - 13",
+      backgroundColor: Colors.greenAccent,
+      start: DateTime.now().atStartOfDay.copyWith(isUtc: false, hour: 12),
+      end: DateTime.now().atStartOfDay.copyWith(isUtc: false, hour: 13)),
   // _DemoEvent(0, 0, const Duration(hours: 10), const Duration(hours: 11)),
   // _DemoEvent(0, 1, const Duration(hours: 11), const Duration(hours: 12)),
   // _DemoEvent(0, 2, const Duration(hours: 12), const Duration(hours: 13)),
