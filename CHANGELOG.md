@@ -16,6 +16,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### 🏗️ Refactoring
 ### 📦 Build & CI
 -->
+## 1.1.1-alpha · 2023-04-24
+### 🎉 New Features
+* `MultiDateContentGeometry` now supports `double durationToY(Duration duration)` to calculate the height of some Duration based on the current zoom.  
+This is analogus to `DateTime resolveOffset(Offset globalOffset)`, just for Duration and backwards
+
 
 ## 1.1.0-alpha · 2023-04-18
 ### 🎉 New Features

@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart' hide Interval;
+import 'package:remind_timetable/src/time/controller.dart';
 
 import '../config.dart';
 import '../date/controller.dart';
@@ -40,8 +41,7 @@ class MultiDateContent<E extends Event> extends StatefulWidget {
   State<MultiDateContent<E>> createState() => MultiDateContentState<E>();
 }
 
-class MultiDateContentState<E extends Event>
-    extends State<MultiDateContent<E>> {
+class MultiDateContentState<E extends Event> extends State<MultiDateContent<E>> {
   late GlobalKey<MultiDateContentGeometry> geometryKey;
   late bool wasGeometryKeyFromWidget;
 
@@ -58,8 +58,7 @@ class MultiDateContentState<E extends Event>
     if (widget.geometryKey == null && wasGeometryKeyFromWidget) {
       geometryKey = GlobalKey<MultiDateContentGeometry>();
       wasGeometryKeyFromWidget = false;
-    } else if (widget.geometryKey != null &&
-        geometryKey != widget.geometryKey) {
+    } else if (widget.geometryKey != null && geometryKey != widget.geometryKey) {
       geometryKey = widget.geometryKey!;
       wasGeometryKeyFromWidget = true;
     }
@@ -71,11 +70,8 @@ class MultiDateContentState<E extends Event>
       controller: DefaultDateController.of(context)!,
       builder: (context, date) => DateContent<E>(
         date: date,
-        events:
-            DefaultEventProvider.of<E>(context)?.call(date.fullDayInterval) ??
-                [],
-        overlays:
-            DefaultTimeOverlayProvider.of(context)?.call(context, date) ?? [],
+        events: DefaultEventProvider.of<E>(context)?.call(date.fullDayInterval) ?? [],
+        overlays: DefaultTimeOverlayProvider.of(context)?.call(context, date) ?? [],
       ),
     );
 
@@ -123,11 +119,22 @@ class MultiDateContentGeometry extends State<MultiDateContentGeometryWidget> {
     final size = renderBox.size;
     final localOffset = renderBox.globalToLocal(globalOffset);
     final pageValue = DefaultDateController.of(context)!.value;
-    final page = (pageValue.page +
-            localOffset.dx / size.width * pageValue.visibleDayCount)
-        .floor();
-    return DateTimeTimetable.dateFromPage(page) +
-        1.days * (localOffset.dy / size.height);
+    final page = (pageValue.page + localOffset.dx / size.width * pageValue.visibleDayCount).floor();
+    return DateTimeTimetable.dateFromPage(page) + 1.days * (localOffset.dy / size.height);
+  }
+
+  // there has to be a configuration above, so we can safely assume non-null
+  Duration get maxViewDuration => DefaultTimeController.of(context)!.maxRange.duration;
+
+  /// Calculates how many pixels in the vertical axis a specific [duration] equals
+  double durationToY(Duration duration) {
+    assert(duration.debugCheckIsValidTimetableTimeOfDay());
+
+    final renderbox = _findRenderBox();
+    final size = renderbox.size;
+
+    final percentOfView = duration / maxViewDuration;
+    return size.height * percentOfView;
   }
 
   RenderBox _findRenderBox() => context.findRenderObject()! as RenderBox;
@@ -198,8 +205,7 @@ class PartDayDraggableEvent extends StatefulWidget {
                 assert(geometryKey == null);
                 onDragCanceled(wasMoved);
               }),
-        childWhileDragging =
-            childWhileDragging ?? _buildDefaultChildWhileDragging(child);
+        childWhileDragging = childWhileDragging ?? _buildDefaultChildWhileDragging(child);
 
   PartDayDraggableEvent.forGeometryKeys(
     this.geometryKeys, {
@@ -209,21 +215,13 @@ class PartDayDraggableEvent extends StatefulWidget {
     PartDayDragCanceledCallbackWithGeometryKey? onDragCanceled,
     required this.child,
     Widget? childWhileDragging,
-  })  : onDragUpdate = onDragUpdate == null
-            ? null
-            : ((geometryKey, dateTime) => onDragUpdate(geometryKey!, dateTime)),
-        onDragEnd = onDragEnd == null
-            ? null
-            : ((geometryKey, dateTime) => onDragEnd(geometryKey!, dateTime)),
-        onDragCanceled = onDragCanceled == null
-            ? null
-            : ((geometryKey, wasMoved) =>
-                onDragCanceled(geometryKey!, wasMoved)),
-        childWhileDragging =
-            childWhileDragging ?? _buildDefaultChildWhileDragging(child);
+  })  : onDragUpdate = onDragUpdate == null ? null : ((geometryKey, dateTime) => onDragUpdate(geometryKey!, dateTime)),
+        onDragEnd = onDragEnd == null ? null : ((geometryKey, dateTime) => onDragEnd(geometryKey!, dateTime)),
+        onDragCanceled =
+            onDragCanceled == null ? null : ((geometryKey, wasMoved) => onDragCanceled(geometryKey!, wasMoved)),
+        childWhileDragging = childWhileDragging ?? _buildDefaultChildWhileDragging(child);
 
-  static Widget _buildDefaultChildWhileDragging(Widget child) =>
-      Opacity(opacity: 0.6, child: child);
+  static Widget _buildDefaultChildWhileDragging(Widget child) => Opacity(opacity: 0.6, child: child);
 
   /// - If this set is empty, the [MultiDateContentGeometry] will be looked up
   ///   in the widget ancestors. This is the default for events placed in a
@@ -332,16 +330,14 @@ class _PartDayDraggableEventState extends State<PartDayDraggableEvent> {
 
   Offset _pointerToWidgetTopCenter(Offset offset) {
     final renderBox = _findRenderBox();
-    final adjustment =
-        Offset(0, _pointerVerticalAlignment! * renderBox.size.height);
+    final adjustment = Offset(0, _pointerVerticalAlignment! * renderBox.size.height);
 
     final local = renderBox.globalToLocal(offset);
     final localAdjusted = local - adjustment;
     return renderBox.localToGlobal(localAdjusted);
   }
 
-  MapEntry<GlobalKey<MultiDateContentGeometry>?, MultiDateContentGeometry>
-      _findGeometry(
+  MapEntry<GlobalKey<MultiDateContentGeometry>?, MultiDateContentGeometry> _findGeometry(
     BuildContext context,
     Offset globalOffset,
   ) {

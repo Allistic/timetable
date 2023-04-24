@@ -265,7 +265,7 @@ class MultiDateTimetableStyle {
   ///   number of rows that header events can allocate.
   final double maxHeaderFraction;
 
-  /// Wheter to show [contentBuilder] behind the [headerBuilder]
+  /// Wheter to show [MultiDateTimetableContentBuilder] behind the [MultiDateTimetableHeaderBuilder]
   final bool contentBehindHead;
 
   MultiDateTimetableStyle copyWith({double? maxHeaderFraction}) {
