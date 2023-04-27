@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:remind_timetable/src/time/controller.dart';
 
 import '../event/event.dart';
 import '../time/overlay.dart';
@@ -23,12 +24,14 @@ class TimeOverlays extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       final height = constraints.maxHeight;
+      
+      final controller = DefaultTimeController.of(context)!;
 
       return Stack(children: [
         for (final overlay in overlays)
           Positioned.fill(
-            top: (overlay.start / 1.days) * height,
-            bottom: (1 - overlay.end / 1.days) * height,
+            top: (overlay.start / controller.maxRange.duration) * height,
+            bottom: (1 - overlay.end / controller.maxRange.duration) * height,
             child: overlay.widget,
           ),
       ]);

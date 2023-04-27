@@ -1,7 +1,9 @@
+import 'package:dart_date/dart_date.dart' as dd;
 import 'package:flutter/widgets.dart';
+import 'package:remind_timetable/src/utils.dart';
 
 import '../event/event.dart';
-import '../utils.dart';
+import 'controller.dart';
 
 @immutable
 class TimeOverlay {
@@ -51,8 +53,7 @@ List<TimeOverlay> emptyTimeOverlayProvider(
 TimeOverlayProvider mergeTimeOverlayProviders(
   List<TimeOverlayProvider> overlayProviders,
 ) {
-  return (context, date) =>
-      overlayProviders.expand((it) => it(context, date)).toList();
+  return (context, date) => overlayProviders.expand((it) => it(context, date)).toList();
 }
 
 class DefaultTimeOverlayProvider extends InheritedWidget {
@@ -64,29 +65,45 @@ class DefaultTimeOverlayProvider extends InheritedWidget {
   final TimeOverlayProvider overlayProvider;
 
   @override
-  bool updateShouldNotify(DefaultTimeOverlayProvider oldWidget) =>
-      overlayProvider != oldWidget.overlayProvider;
+  bool updateShouldNotify(DefaultTimeOverlayProvider oldWidget) => overlayProvider != oldWidget.overlayProvider;
 
   static TimeOverlayProvider? of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<DefaultTimeOverlayProvider>()
-        ?.overlayProvider;
+    return context.dependOnInheritedWidgetOfExactType<DefaultTimeOverlayProvider>()?.overlayProvider;
   }
 }
 
 extension EventToTimeOverlay on Event {
-  TimeOverlay? toTimeOverlay({
+  TimeOverlay? toTimeOverlay(
+    BuildContext context, {
     required DateTime date,
     required Widget widget,
     TimeOverlayPosition position = TimeOverlayPosition.inFrontOfEvents,
   }) {
     assert(date.debugCheckIsValidTimetableDate());
 
-    if (!interval.intersects(date.fullDayInterval)) return null;
+    final controller = DefaultTimeController.of(context)!;
+    final _start = controller.maxRange.startTime;
+    final _end = controller.maxRange.endTime;
+
+    final dateStart = date.add(_start);
+    final dateEnd = date.add(_end);
+
+    final intersects = start.isSameOrBefore(dateEnd) && endInclusive.isSameOrAfter(dateStart);
+
+    // print("Timeoverlay: $start $end | $date => $intersects");
+    if (!intersects) {
+      return null;
+    }
+
+    // start=25. 12h, end=25. 13h
+    // dateStart=24. 21h, dateEnd=26. 2h
+    final deltaStart = start.difference(dateStart);
+    final deltaEnd = endInclusive.difference(dateStart);
+    // print("Timeoverlay: deltaStart: $deltaStart - $deltaEnd");
 
     return TimeOverlay(
-      start: start.difference(date).coerceAtLeast(Duration.zero),
-      end: endInclusive.difference(date).coerceAtMost(1.days),
+      start: deltaStart,
+      end: deltaEnd,
       widget: widget,
       position: position,
     );

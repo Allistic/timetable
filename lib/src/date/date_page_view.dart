@@ -140,7 +140,7 @@ class _DatePageViewState extends State<DatePageView> {
   }
 
   Widget _buildPage(BuildContext context, int page) {
-    var child = widget.builder(context, DateTimeTimetable.dateFromPage(page));
+    var child = widget.builder(context, DateTimeTimetable.dateFromPage(page).atStartOfDay);
     if (widget.shrinkWrapInCrossAxis) {
       child = ImmediateSizeReportingOverflowPage(
         onSizeChanged: (size) {

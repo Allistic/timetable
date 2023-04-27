@@ -105,7 +105,7 @@ class _TimetableExampleState extends State<TimetableExample> with TickerProvider
         // positioningDemoOverlayProvider,
         (context, date) => _draggedEvents
             .map(
-              (it) => it.toTimeOverlay(date: date, widget: BasicEventWidget(it)),
+              (it) => it.toTimeOverlay(context, date: date, widget: BasicEventWidget(it)),
             )
             .whereNotNull()
             .toList(),
@@ -157,8 +157,11 @@ class _TimetableExampleState extends State<TimetableExample> with TickerProvider
       onDragStart: () => setState(() => _draggedEvents.add(event)),
       onDragUpdate: (dateTime) => setState(() {
         dateTime = dateTime.roundTimeToMultipleOf(roundedTo);
+        // print("DRAG: dateTime: $dateTime");
+
         final index = _draggedEvents.indexWhere((it) => it.id == event.id);
         final oldEvent = _draggedEvents[index];
+        
         _draggedEvents[index] = oldEvent.copyWith(
           start: dateTime,
           end: dateTime + oldEvent.duration,

@@ -5,7 +5,7 @@ import '../theme.dart';
 import '../utils.dart';
 
 /// A widget that displays horizontal dividers for a day.
-/// 
+///
 /// via the [DividersStyle.interval] you can adjust how these get drawn
 ///
 /// See also:
@@ -51,7 +51,7 @@ class DividersStyle {
     return DividersStyle.raw(
       color: color ?? dividerBorderSide.color,
       width: width ?? dividerBorderSide.width,
-      interval: interval ?? 1.hours
+      interval: interval ?? 1.hours,
     );
   }
 
@@ -77,9 +77,7 @@ class DividersStyle {
   int get hashCode => Object.hash(color, width);
   @override
   bool operator ==(Object other) {
-    return other is DividersStyle &&
-        color == other.color &&
-        width == other.width;
+    return other is DividersStyle && color == other.color && width == other.width;
   }
 }
 
@@ -105,6 +103,5 @@ class _DividersPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_DividersPainter oldDelegate) =>
-      style != oldDelegate.style;
+  bool shouldRepaint(_DividersPainter oldDelegate) => style != oldDelegate.style;
 }
