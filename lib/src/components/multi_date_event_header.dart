@@ -346,7 +346,7 @@ class _EventParentDataWidget extends ParentDataWidget<_EventParentData> {
 }
 
 class _EventsWidget extends MultiChildRenderObjectWidget {
-  _EventsWidget({
+  const _EventsWidget({
     required this.pageValue,
     required this.eventHeight,
     required this.maxEventRows,

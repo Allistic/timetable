@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="at.betta.remind.timetable.example">
+    package="systems.betta.remind.timetable.example">
    <application
         android:label="Timetable example"
         android:name="${applicationName}"

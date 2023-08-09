@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:black_hole_flutter/black_hole_flutter.dart';
 import 'package:flutter/material.dart';
 // ignore: implementation_imports
 import 'package:remind_timetable/src/utils.dart';
@@ -254,6 +253,7 @@ class _DemoEvent extends BasicEvent {
           end: DateTime.now().atStartOfDay + (demoId + endDateOffset).days + end,
         );
 
+  // ignore: unused_element
   _DemoEvent.allDay(int id, int startOffset, int length)
       : super(
           id: 'a-$id',
@@ -264,7 +264,11 @@ class _DemoEvent extends BasicEvent {
         );
 
   static Color _getColor(String id) {
-    return Random(id.hashCode).nextColorHsv(saturation: 0.6, value: 0.8, alpha: 1).toColor();
+    final r = Random(id.hashCode).nextInt(255);
+    final g = Random(id.hashCode).nextInt(255);
+    final b = Random(id.hashCode).nextInt(255);
+
+    return Color.fromRGBO(r, g, b, 1);
   }
 }
 
@@ -274,7 +278,7 @@ List<TimeOverlay> positioningDemoOverlayProvider(
 ) {
   assert(date.debugCheckIsValidTimetableDate());
 
-  final widget = ColoredBox(color: context.theme.brightness.contrastColor.withOpacity(.1));
+  final widget = ColoredBox(color: Theme.of(context).colorScheme.onBackground.withOpacity(.1));
 
   if (DateTime.monday <= date.weekday && date.weekday <= DateTime.friday) {
     return [

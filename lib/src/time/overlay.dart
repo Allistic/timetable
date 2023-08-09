@@ -1,3 +1,5 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:dart_date/dart_date.dart' as dd;
 import 'package:flutter/widgets.dart';
 import 'package:remind_timetable/src/utils.dart';

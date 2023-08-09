@@ -21,6 +21,7 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
@@ -42,8 +43,8 @@ android {
     }
 
     defaultConfig {
-        applicationId "at.betta.remind.timetable.example"
-        minSdkVersion flutter.minSdkVersion
+        applicationId "systems.betta.remind.timetable.example"
+        minSdkVersion 19
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

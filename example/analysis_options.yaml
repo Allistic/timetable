@@ -44,7 +44,7 @@ linter:
     prefer_if_elements_to_conditional_expressions: true
     prefer_int_literals: true
     prefer_relative_imports: true
-    prefer_single_quotes: true
+    prefer_single_quotes: false
     secure_pubspec_urls: true
     sized_box_shrink_expand: true
     sort_constructors_first: true

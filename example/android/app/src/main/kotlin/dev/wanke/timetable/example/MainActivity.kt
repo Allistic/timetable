@@ -1,4 +1,4 @@
-package at.betta.remind.timetable.example
+package systems.betta.remind.timetable.example
 
 import io.flutter.embedding.android.FlutterActivity
 

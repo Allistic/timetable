@@ -15,7 +15,7 @@ import 'package:flutter/widgets.dart';
 /// * `mainAxisSize = MainAxisSize.min`
 /// * `crossAxisAlignment = CrossAxisAlignment.start`
 class ConstraintsPassingColumn extends MultiChildRenderObjectWidget {
-  ConstraintsPassingColumn({required super.children});
+  const ConstraintsPassingColumn({required super.children});
 
   @override
   RenderObject createRenderObject(BuildContext context) =>
