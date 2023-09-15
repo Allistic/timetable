@@ -17,6 +17,22 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### 📦 Build & CI
 -->
 
+## 1.1.5 · 2023-09-04
+### ⚡ Changes
+* calling `jumpToPage(double page)` on dateController now just takes `page` as is, without jumping to a whole page
+
+## 1.1.4-alpha · 2023-08-09
+### 🐛 Bug Fixes
+* `resolveOffset` returned wrong values (again), fixed it (again), hopefully this will work (again)
+### 🏗️ Refactoring
+* Housekeeping of versions
+
+## 1.1.3-alpha · 2023-04-27
+### 🐛 Bug Fixes
+* The TimeOverlays didn't render correctly, now it's fixed
+
+
+
 ## 1.1.2-alpha · 2023-04-24
 ### 🐛 Bug Fixes
 * `resolveOffset` returned wrong values, based on how much earlier the TimeController's min Duration starts.

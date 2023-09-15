@@ -85,7 +85,8 @@ class _TimetableExampleState extends State<TimetableExample> with TickerProvider
                   ),
                   contentBuilder: (context, onLeadingWidthChanged) => GestureDetector(
                     onTapDown: (details) {
-                      print("Pointer at ${timetableKey.currentState!.resolveOffset(details.globalPosition)}");
+                      final time = timetableKey.currentState!.resolveOffset(details.globalPosition);
+                      print("Pointer at ${time} ${time.isUtc}");
                     },
                     child: MultiDateTimetableContent<BasicEvent>(
                       contentGeometryKey: timetableKey,
@@ -161,7 +162,7 @@ class _TimetableExampleState extends State<TimetableExample> with TickerProvider
 
         final index = _draggedEvents.indexWhere((it) => it.id == event.id);
         final oldEvent = _draggedEvents[index];
-        
+
         _draggedEvents[index] = oldEvent.copyWith(
           start: dateTime,
           end: dateTime + oldEvent.duration,

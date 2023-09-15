@@ -1,7 +1,7 @@
 name: remind_timetable
 description: ReMinds timetable
-version: 1.1.2-alpha
-repository: https://github.com/Allistic/timetable
+version: 1.1.5
+repository: https://github.com/BettaSystems/timetable
 
 environment:
   sdk: '>=2.18.0 <3.0.0'

@@ -125,10 +125,15 @@ class MultiDateContentGeometry extends State<MultiDateContentGeometryWidget> {
 
     final tCtrlr = DefaultTimeController.of(context)!;
     final maxDuration = tCtrlr.maxRange.duration;
-    final percentage =
-        (localOffset.dy + durationToY(tCtrlr.maxRange.startTime - (tCtrlr.maxRange.endTime - 1.days))) / size.height;
+    final columnStart = DateTimeTimetable.dateFromPage(page).atStartOfDay + tCtrlr.maxRange.startTime;
+    // print("columnStart: $columnStart");
+    // print("tCtrlr: ${tCtrlr.maxRange.startTime} ${tCtrlr.maxRange.endTime} -> $maxDuration");
 
-    return DateTimeTimetable.dateFromPage(page) + maxDuration * percentage;
+    final percentage = (localOffset.dy) / size.height;
+    final timeAfterColumnStart = maxDuration * percentage;
+    // print("timeAfterColumnStart: $timeAfterColumnStart");
+
+    return columnStart + timeAfterColumnStart;
   }
 
   // there has to be a configuration above, so we can safely assume non-null

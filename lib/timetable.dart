@@ -21,6 +21,7 @@ export 'src/config.dart';
 export 'src/date/controller.dart';
 export 'src/date/date_page_view.dart';
 export 'src/date/month_page_view.dart';
+export 'src/date/scroll_physics.dart';
 export 'src/date/visible_date_range.dart';
 export 'src/event/all_day.dart';
 export 'src/event/basic.dart';
@@ -47,4 +48,6 @@ export 'src/utils.dart'
         NullableIntTimetable,
         NullableIntervalTimetable,
         WeekWidgetBuilder;
+export 'src/utils/listenable.dart';
+export 'src/utils/size_reporting_widget.dart';
 export 'src/week.dart';

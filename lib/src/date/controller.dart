@@ -125,13 +125,13 @@ class DateController extends ValueNotifier<DatePageValueWithScrollActivity> {
   void jumpToToday() => jumpTo(DateTimeTimetable.today());
   void jumpTo(DateTime date) {
     assert(date.debugCheckIsValidTimetableDate());
-    jumpToPage(date.page);
+    jumpToPage(value.visibleRange.getTargetPageForFocus(date.page));
   }
 
   void jumpToPage(double page) {
     cancelAnimation();
     value = value.copyWithActivity(
-      page: value.visibleRange.getTargetPageForFocus(page),
+      page: page,
       activity: const IdleDateScrollActivity(),
     );
   }
