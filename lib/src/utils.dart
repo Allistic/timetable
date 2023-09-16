@@ -72,7 +72,10 @@ extension DateTimeTimetable on DateTime {
     );
   }
 
-  Duration get timeOfDay => difference(atStartOfDay);
+  DateTime get asUtc => copyWith(isUtc: true);
+  DateTime get asLocal => copyWith(isUtc: false);
+
+  Duration get time => difference(atStartOfDay);
 
   DateTime get atStartOfDay => copyWith(hour: 0, minute: 0, second: 0, millisecond: 0);
   bool get isAtStartOfDay => this == atStartOfDay;
@@ -129,7 +132,7 @@ extension DateTimeTimetable on DateTime {
 
   DateTime roundTimeToMultipleOf(Duration duration) {
     assert(duration.debugCheckIsValidTimetableTimeOfDay());
-    return atStartOfDay + duration * (timeOfDay / duration).floor();
+    return atStartOfDay + duration * (time / duration).floor();
   }
 
   double get page {
@@ -142,18 +145,24 @@ extension DateTimeTimetable on DateTime {
     return page.floor();
   }
 
+  /// Will always return UTC Dates
   static DateTime dateFromPage(int page) {
     final date = DateTime.fromMillisecondsSinceEpoch(
-      (page * Duration.millisecondsPerDay).toInt(),
-    );
+      page * Duration.millisecondsPerDay,
+      // This has to be in utc, because the timetable package works only in utc
+      isUtc: true,
+    ).asLocal;
     assert(date.debugCheckIsValidTimetableDate());
     return date;
   }
 
+  /// Will always return UTC DateTimes
   static DateTime dateTimeFromPage(double page) {
     return DateTime.fromMillisecondsSinceEpoch(
       (page * Duration.millisecondsPerDay).toInt(),
-    );
+      // This has to be in utc, because the timetable package works only in utc
+      isUtc: true,
+    ).asLocal;
   }
 }
 

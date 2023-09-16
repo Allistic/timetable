@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+<!-- All notable changes to this project will be documented in this file. -->
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
@@ -16,6 +16,18 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### 🏗️ Refactoring
 ### 📦 Build & CI
 -->
+
+## 1.1.8 · 2023-09-16
+### 🏗️ Refactoring
+* `DateTime.timeOfDay` -> `DateTime.time`
+
+## 1.1.7 · 2023-09-16
+### ⚡ Changes
+* The value of DateController now will always return a **Local Time** date
+
+## 1.1.6 · 2023-09-16
+### ⚡ Changes
+* The value of DateController now will always return a **UTC** date
 
 ## 1.1.5 · 2023-09-04
 ### ⚡ Changes

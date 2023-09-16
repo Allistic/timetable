@@ -332,7 +332,7 @@ class _NowIndicatorPainter extends CustomPainter {
     final actualRight = right.coerceAtMost(size.width);
 
     // this is due to the possibility that the startTime is negative (meaning containing data from the colum before)
-    final durationAfterColumnStartTime = now.timeOfDay - timeController.maxRange.startTime;
+    final durationAfterColumnStartTime = now.time - timeController.maxRange.startTime;
     final y = durationAfterColumnStartTime / timeController.maxRange.duration * size.height;
     canvas.drawLine(Offset(actualLeft, y), Offset(actualRight, y), _paint);
     style.shape.paint(canvas, size, left, right, y);
